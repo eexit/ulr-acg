@@ -26,7 +26,7 @@ echo
 echo "127.0.0.1     $SERVER_NAME" >> /etc/hosts
 echo "::1           $SERVER_NAME" >> /etc/hosts
 
-if [ -d $SERVER_ROOT ]; then
+if [ ! -d $SERVER_ROOT ]; then
     mkdir -p $SERVER_ROOT
 fi
 
