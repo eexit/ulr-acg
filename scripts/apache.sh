@@ -4,7 +4,7 @@ APP_NAME=g1b5
 CONF_DIR=`pwd`/../confs
 APACHE_CONF=$CONF_DIR/apache.conf
 SERVER_NAME=www.$APP_NAME.tp.org
-SERVER_ROOT=/var/org/tp/$APP_NAME
+SERVER_ROOT=/var/www/org/tp/$APP_NAME
 
 if [ "`whoami`" != 'root' ]; then
     echo "You have to be root user to run $0!"
@@ -32,3 +32,6 @@ fi
 
 touch $SERVER_ROOT/ha_state
 cp $APACHE_CONF /etc/httpd/conf.d/$APP_NAME.conf
+
+/etc/init.d/httpd start
+
