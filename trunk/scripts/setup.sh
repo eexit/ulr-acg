@@ -7,7 +7,7 @@ if [ "$(whoami)" != 'root' ]; then
     exit 1;
 fi
 
-yum -y -q install haproxy heartbeat
+yum -y -q install haproxy heartbeat php-ldap
 
 
 

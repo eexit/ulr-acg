@@ -1,1 +1,1 @@
-<h1>Alive</h1>
+<?php phpinfo(); ?>
