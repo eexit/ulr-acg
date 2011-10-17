@@ -1,10 +1,9 @@
 !#/bin/sh
 
-APP_NAME=g1b5
 CONF_DIR=`pwd`/../confs
 APACHE_CONF=$CONF_DIR/apache.conf
-SERVER_NAME=www.$APP_NAME.tp.org
-SERVER_ROOT=/var/www/org/tp/$APP_NAME/web
+SERVER_NAME=www.g1b5.tp.org
+SERVER_ROOT=/var/www/org/tp/g1b5/web
 
 if [ "`whoami`" != 'root' ]; then
     echo
@@ -25,15 +24,20 @@ echo
 
 /etc/init.d/httpd stop
 
-echo "127.0.0.1     $SERVER_NAME" >> /etc/hosts
-echo "::1           $SERVER_NAME" >> /etc/hosts
+#echo "127.0.0.1     $SERVER_NAME" >> /etc/hosts
+#echo "::1           $SERVER_NAME" >> /etc/hosts
 
 if [ ! -d $SERVER_ROOT ]; then
     mkdir -p $SERVER_ROOT
 fi
 
-touch $SERVER_ROOT/ha_state
-cp $APACHE_CONF /etc/httpd/conf.d/$APP_NAME.conf
+if [ ! -e $SERVER_ROOT/ha_state ]; then
+    touch $SERVER_ROOT/ha_state
+fi
+
+if [(! -e /etc/httpd/conf.d/g1b5.conf) -o ("`md5sum $APACHE_CONF`" != "`md5sum /etc/httpd/conf.d/g1b5.conf`")]; then
+    cp $APACHE_CONF /etc/httpd/conf.d/g1b5.conf
+fi
 
 /etc/init.d/httpd start
 
