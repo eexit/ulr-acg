@@ -40,7 +40,7 @@ if [ 1 -eq "`ifconfig | grep -c $UC2v4`" ]; then
     ifconfig $UC2I inet6 add $UC2v6/64
     echo "export farm_addr=$UC2v4" >> ~/.bashrc
 fi
-source ~/.bashrc
+`source ~/.bashrc`
 echo
 echo "[ OK ]"
 echo
