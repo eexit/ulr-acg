@@ -24,34 +24,42 @@ if [ "`whoami`" != "root" ]; then
     echo "You have to be root user to run $0!"
     exit 1;
 fi
+
+export farm_port=6800
+export farm_mcast=228.128.1.1
+
 echo
 echo "Configuring interfaces..."
 if [ 1 -eq "`ifconfig | grep -c $UC1v4`" ]; then
+    hostname $UC1HOST
     ifconfig $UC1I inet6 add $UC1v6/64
+    export farm_addr=$UC1v4
 fi
 if [ 1 -eq "`ifconfig | grep -c $UC2v4`" ]; then
+    hostname $UC2HOST
     ifconfig $UC2I inet6 add $UC2v6/64
+    export farm_addr=$UC2v4
 fi
 echo
 echo "[ OK ]"
 echo
 
 if [ 0 -eq "`cat /etc/hosts | grep -c $UC1HOST`" ]; then
-    echo -e "\n$UC1v4        $UC1HOST" >> /etc/hosts
-    echo -e "\n$UC1v6        $UC1HOST" >> /etc/hosts
+    echo "$UC1v4        $UC1HOST" >> /etc/hosts
+    echo "$UC1v6        $UC1HOST" >> /etc/hosts
 fi
 if [ 0 -eq "`cat /etc/hosts | grep -c $UC2HOST`" ]; then
-    echo -e "\n$UC2v4        $UC2HOST" >> /etc/hosts
-    echo -e "\n$UC2v6        $UC2HOST" >> /etc/hosts
+    echo "$UC2v4        $UC2HOST" >> /etc/hosts
+    echo "$UC2v6        $UC2HOST" >> /etc/hosts
 fi
 
 # if [ 0 -eq "`cat /etc/sysctl.conf | grep -c net.ipv4.ip_nonlocal_bind`" ]; then
 #     echo "Allows IP sharing..."
-#     cat << EOL >> /etc/sysctl.conf
+#     cat << EOT >> /etc/sysctl.conf
 # 
 # # Allows HAproxy shared IP
 # net.ipv4.ip_nonlocal_bind = 1
-# EOL;
+# EOT
 #     sysctl -p
 #     echo
 #     echo "[ OK ]"
@@ -103,3 +111,4 @@ yum -y -q install php-ldap
 echo
 echo "[ OK ]"
 echo
+
