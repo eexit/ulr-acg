@@ -1,5 +1,11 @@
 !#/bin/sh
 
+UC1E="eth0"
+UC2E="eth1"
+
+UC1A=fd00:0:c9::501
+UC2A=fd00:0:c9::502
+
 UC1=10.192.10.24
 UC2=10.192.10.23
 
@@ -20,10 +26,10 @@ fi
 echo
 echo Configuring interfaces...
 if [ 1 -eq "`ifconfig | grep -c $UC1`" ]; then
-    ifconfig eth1 inet6 add fd00:0:c9::501/64
+    ifconfig $UC1E inet6 add $UC1A/64
 fi
 if [ 1 -eq "`ifconfig | grep -c $UC2`" ]; then
-    ifconfig eth1 inet6 add fd00:0:c9::502/64
+    ifconfig $UC2E inet6 add $UC2A/64
 fi
 echo
 echo [ OK ]
