@@ -75,7 +75,7 @@ fi
 echo
 echo Staging WebApplication into Web root directory...
 echo
-cp -rf $HERE/../lib/webserver /tmp/web
+cp -rf $HERE/../lib/webapp/* /tmp/web
 find /tmp/web -name ".svn" -type d -exec rm -rf {} \;
 rm -rf $SERVER_ROOT/*
 mv -v /tmp/web/* $SERVER_ROOT
