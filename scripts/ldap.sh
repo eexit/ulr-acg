@@ -36,6 +36,6 @@ chown -R ldap:ldap /var/run/openldap
 
 /etc/init.d/slapd start
 
-ldapadd -x -D 'cn=Manager,dc=g1b5,dc=tp,dc=org' -W -f $LDIF_FILE
+ldapadd -c -x -D 'cn=Manager,dc=g1b5,dc=tp,dc=org' -W -f $LDIF_FILE
  
 
