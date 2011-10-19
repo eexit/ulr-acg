@@ -24,7 +24,7 @@ if [ ! -d /etc/corosync ]; then
 fi
 
 echo "Configuring corosync..."
-cp /etc/corosync/corosync.conf.example /etc/corosync/corosync.conf
+cp -f /etc/corosync/corosync.conf.example /etc/corosync/corosync.conf
 sed -i.bak "s/.*mcastaddr:.*/mcastaddr:\ $farm_mcast/g" /etc/corosync/corosync.conf
 sed -i.bak "s/.*mcastport:.*/mcastport:\ $farm_port/g" /etc/corosync/corosync.conf
 sed -i.bak "s/.*bindnetaddr:.*/bindnetaddr:\ $farm_addr/g" /etc/corosync/corosync.conf

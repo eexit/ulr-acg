@@ -25,21 +25,22 @@ if [ "`whoami`" != "root" ]; then
     exit 1;
 fi
 
-export farm_port=6800
-export farm_mcast=228.128.1.1
+echo "export farm_port=6800" >> ~/.bashrc
+echo "export farm_mcast=228.128.1.1" >> ~/.bashrc
 
 echo
 echo "Configuring interfaces..."
 if [ 1 -eq "`ifconfig | grep -c $UC1v4`" ]; then
     hostname $UC1HOST
     ifconfig $UC1I inet6 add $UC1v6/64
-    export farm_addr=$UC1v4
+    echo "export farm_addr=$UC1v4" >> ~/.bashrc
 fi
 if [ 1 -eq "`ifconfig | grep -c $UC2v4`" ]; then
     hostname $UC2HOST
     ifconfig $UC2I inet6 add $UC2v6/64
-    export farm_addr=$UC2v4
+    echo "export farm_addr=$UC2v4" >> ~/.bashrc
 fi
+source ~/.bashrc
 echo
 echo "[ OK ]"
 echo
