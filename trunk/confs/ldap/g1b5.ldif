@@ -1,0 +1,9 @@
+dn: dc=g1b5,dc=tp,dc=org
+objectclass: dcObject
+objectclass: organization
+o: G1B5 
+dc: g1b5.tp.org
+
+dn: cn=Manager,dc=g1b5,dc=tp,dc=org
+objectclass: organizationalRole
+cn: Manager
