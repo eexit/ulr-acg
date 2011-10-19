@@ -37,12 +37,12 @@ echo "[ OK ]"
 echo
 
 if [ 0 -eq "`cat /etc/hosts | grep -c $UC1HOST`" ]; then
-    echo "\n$UC1v4        $UC1HOST" >> /etc/hosts
-    echo "\n$UC1v6        $UC1HOST" >> /etc/hosts
+    echo -e "\n$UC1v4        $UC1HOST" >> /etc/hosts
+    echo -e "\n$UC1v6        $UC1HOST" >> /etc/hosts
 fi
 if [ 0 -eq "`cat /etc/hosts | grep -c $UC2HOST`" ]; then
-    echo "\n$UC2v4        $UC2HOST" >> /etc/hosts
-    echo "\n$UC2v6        $UC2HOST" >> /etc/hosts
+    echo -e "\n$UC2v4        $UC2HOST" >> /etc/hosts
+    echo -e "\n$UC2v6        $UC2HOST" >> /etc/hosts
 fi
 
 # if [ 0 -eq "`cat /etc/sysctl.conf | grep -c net.ipv4.ip_nonlocal_bind`" ]; then
@@ -61,6 +61,7 @@ fi
 
 /sbin/chkconfig --del iptables
 service iptables stop
+echo
 echo "Installing pacemaker..."
 yum -y -q install pacemaker
 echo
