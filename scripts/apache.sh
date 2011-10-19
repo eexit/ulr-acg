@@ -41,6 +41,7 @@ if [ ! -e $SERVER_ROOT/ha_state ]; then
 	echo
 	echo Creating Heartbeat log file
     touch $SERVER_ROOT/ha_state
+    echo
 	echo [ OK ]
 fi
 
