@@ -24,9 +24,15 @@ echo
 
 /etc/init.d/slapd stop
 
+rm -rf /etc/openldap/slapd.d
+
 cp $LDAP_CONF /etc/openldap/ldap.conf
 
-cp $LDAP_CONF /etc/openldap/slapd.conf
+cp $SLAPD_CONF /etc/openldap/slapd.conf
+
+chown -R ldap:ldap /etc/openldap/
+chown -R ldap:ldap /var/lib/ldap
+chown -R ldap:ldap /var/run/openldap
 
 /etc/init.d/slapd start
 
