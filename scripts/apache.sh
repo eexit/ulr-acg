@@ -39,7 +39,7 @@ if [ ! -d $SERVER_ROOT ]; then
 	echo
 	echo "Creating Web root directory..."
     mkdir -p --verbose $SERVER_ROOT
-	chown -R apache:apache $SERVER_ROOT
+	chown -R apache:apache /var/cluster/www
 	echo
     echo "[   ${bldblu}OK${txtrst}   ]"
 fi
