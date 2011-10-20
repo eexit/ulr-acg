@@ -1,0 +1,5 @@
+# Sets env variable to configure pacemaker
+export FARM_PORT="6800"
+export FARM_MCAST="239.0.0.1"
+export FARM_SERV_ADDR="10.192.10.0"
+export FARM_ADDR="10.192.10.50"

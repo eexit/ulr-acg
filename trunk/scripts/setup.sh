@@ -16,6 +16,7 @@ if [ "`whoami`" != "root" ]; then
     exit 1;
 fi
 
+source ./env
 UC1HOST="mamba14"
 UC2HOST="mamba13"
 #UC1I="eth0"
@@ -26,12 +27,6 @@ DRUC1="10.0.0.24"
 DRUC2="10.0.0.23"
 UC1v6="fd00:0:c9::501"
 UC2v6="fd00:0:c9::502"
-
-# Sets env variable to configure pacemaker
-export FARM_PORT="6800"
-export FARM_MCAST="239.0.0.1"
-export FARM_SERV_ADDR="10.192.10.0"
-export FARM_ADDR="10.192.10.50"
 
 clear
 
@@ -45,10 +40,10 @@ echo
 echo "Script developped by Joris Berthelot and Laurent Le Moine Copyright (c) 2011"
 echo
 echo
-read -p "Which is your primary ethernet interface? (ethX)" -n 4 ETH
+read -p "Which is your primary ethernet interface? (ethX): " -n 4 ETH
 echo -e "\nWorking ethernet interface: $ETH"
 
-IP=`ip addr show $ETH | grep "inet " | tail -n 1 | awk '{print $4}' | sed s/255/0/`
+IP=`ip addr show $ETH | grep "inet " | tail -n 1 | sed 's/\// /' | awk '{print $2}'`
 
 echo "Hostname: `hostname`"
 echo "IP Address: $IP"
@@ -67,11 +62,11 @@ if [ 1 -eq "`hostname | grep -c $UC1HOST`" ]; then
     hostname $UC1HOST
     
     if [ 0 -eq "`ifconfig $OETH | grep -c $DRUC1`" ]; then
-        ifconfig $OETH add $DRUC1/24
+        ifconfig $OETH $DRUC1/16
     fi
     
     if [ 0 -eq "`ifconfig $ETH | grep -c $UC1v6`" ]; then
-        #ifconfig $UC1I inet6 add $UC1v6/64
+        ifconfig $UC1I inet6 add $UC1v6/64
     fi
     
     if [ 0 -eq "`cat /etc/hosts | grep -c $UC2HOST`" ]; then
@@ -86,11 +81,11 @@ if [ 1 -eq "`hostname | grep -c $UC2HOST`" ]; then
     hostname $UC2HOST
     
     if [ 0 -eq "`ifconfig $OETH | grep -c $DRUC2`" ]; then
-        ifconfig $OETH add $DRUC2/24
+        ifconfig $OETH $DRUC2/16
     fi
     
     if [ 0 -eq "`ifconfig $ETH | grep -c $UC2v6`" ]; then
-        #ifconfig $UC2I inet6 add $UC2v6/64
+        ifconfig $UC2I inet6 add $UC2v6/64
     fi
     
     if [ 0 -eq "`cat /etc/hosts | grep -c $UC1HOST`" ]; then
@@ -161,8 +156,3 @@ echo "Installing wget..."
 yum -y -q install wget
 echo
 echo "[   ${bldblu}OK${txtrst}   ]"
-
-
-
-
-source $0
