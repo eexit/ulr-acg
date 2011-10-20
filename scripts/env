@@ -1,4 +1,12 @@
-# Sets env variable to configure pacemaker
+# Sets env variable
+export UC1HOST="mamba14"
+export UC2HOST="mamba13"
+export UC1v4="10.192.10.24"
+export UC2v4="10.192.10.23"
+export DRUC1="10.0.0.24"
+export DRUC2="10.0.0.23"
+export UC1v6="fd00:0:c9::501"
+export UC2v6="fd00:0:c9::502"
 export FARM_PORT="6800"
 export FARM_MCAST="239.0.0.1"
 export FARM_SERV_ADDR="10.192.10.0"
