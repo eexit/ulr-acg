@@ -42,19 +42,22 @@ zone "." IN {
 };
 
 zone "g1b5.tp.org" IN {
-	type master;
-	file "/etc/named/g1b5.tp.org.zone";
+	type slave;
+	file "g1b5.tp.org.zone";
+	master { 10.0.0.23 };
 };
 
 
 /*zone "0.0.0.0.9.c.0.0.0.0.0.0.0.0.d.f.ip6.arpa" {
-	type master;
-	file "/etc/named/rv6.g1b5.tp.org.zone";
+	type slave;
+	file "rv6.g1b5.tp.org.zone";
+	master { 10.0.0.23 };
 };*/
 
 zone "10.192.10.in-addr.arpa" {
-	type master;
-	file "/etc/named/rv4.g1b5.tp.org.zone";
+	type slave;
+	file "rv4.g1b5.tp.org.zone";
+	master { 10.0.0.23 };
 };
 
 include "/etc/named.rfc1912.zones";

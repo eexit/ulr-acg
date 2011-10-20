@@ -1,0 +1,24 @@
+; fd00:0:c9::/64 
+
+@	IN SOA  0.0.0.0.9.c.0.0.0.0.0.0.0.0.d.f.ip6.arpa ns1.g1b5.tp.org laurent.tp4.org. (
+		2011102001	; Serial number (YYYYMMdd)
+		10800		; Refresh time
+		3600		; Retry time
+		604800		; Expire time
+		38400		; Default TTL (bind 8 ignores this, bind 9 needs it)
+)
+
+; Name server entries
+	IN	NS		ns1.g1b5.tp.org.
+	IN	NS		ns2.g1b5.tp.org.
+; IPv6 PTR entries
+
+; Subnet #1
+$ORIGIN 10.192.10.in-addr.arpa.
+
+501	IN  PTR		ns1.g1b5.tp.org.
+502	IN  PTR     ns2.g1b5.tp.org.
+;???	IN  PTR     g1b5.tp.org.
+;???	IN  PTR     sql.g1b5.tp.org.
+;???	IN	PTR		ldap.g1b5.tp.org.
+;???	IN	PTR		www.g1b5.tp.org.
