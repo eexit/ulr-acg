@@ -89,7 +89,7 @@ echo
 #cp -ax /var/www /var/cluster/www
 #cp -ax /var/lib/ldap /var/cluster/lib/ldap
 #cp -ax /var/lib/mysql /var/cluster/lib/mysql
-echo "${warn} Please, edit your /etc/fstab and /var/cluster to /dev/drbd1. Want to edit right now? (y/n) " -n 1 ANS
+read -p "${warn} Please, edit your /etc/fstab and /var/cluster to /dev/drbd1. Want to edit right now? (y/n) " -n 1 ANS
 if [ "y" == $ANS ]; then
 	vim /etc/fstab
 fi
