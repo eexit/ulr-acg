@@ -35,7 +35,7 @@ echo
 
 cp $LDAP_CONF /etc/openldap/ldap.conf
 
-cp $LDAP_CONF /etc/openldap/slapd.conf
+cp $SLAPD_CONF /etc/openldap/slapd.conf
 
 /etc/init.d/slapd start
 
