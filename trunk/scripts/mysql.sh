@@ -43,8 +43,11 @@ chown -R mysql:mysql /var/cluster/mysql
 
 mysqladmin -u root password $ROOT_PASSWD
 
-echo "Création de la base et peuplement"
-
-mysql -f -u root --password < $SQL_SCRIPT
+read -p "Create the database and fill it? (y/n) " -n 1 ANS
+if [ "y" == $ANS ]; then
+	echo
+	mysql -f -u root --password < $SQL_SCRIPT
+fi
+echo
  
 

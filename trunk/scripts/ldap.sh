@@ -45,6 +45,10 @@ chown ldap:ldap /var/cluster/ldap
 
 /etc/init.d/slapd start
 
-ldapadd -x -D 'cn=Manager,dc=g1b5,dc=tp,dc=org' -W -f $LDIF_FILE
- 
+read -p "Fill the database? (y/n) " -n 1 ANS
+if [ "y" == $ANS ]; then
+	echo
+	ldapadd -x -D 'cn=Manager,dc=g1b5,dc=tp,dc=org' -W -f $LDIF_FILE
+fi
+echo
 
