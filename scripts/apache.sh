@@ -11,9 +11,9 @@ warn=${bldred}!${txtrst}
 
 HERE=`pwd`
 CONF_DIR=$HERE/../confs/apache
-APACHE_CONF=$CONF_DIR/g1b5.conf
-SERVER_NAME=www.g1b5.tp.org
-SERVER_ROOT=/var/www/org/tp/g1b5/web
+APACHE_CONF=$CONF_DIR/httpd.conf
+#SERVER_NAME=www.g1b5.tp.org
+SERVER_ROOT=/var/cluster/www/org/tp/g1b5/web
 
 if [ "`whoami`" != "root" ]; then
     echo
@@ -52,18 +52,18 @@ if [ ! -e $SERVER_ROOT/ha_state ]; then
     echo "[   ${bldblu}OK${txtrst}   ]"
 fi
 
-if [ -e /etc/httpd/conf.d/g1b5.conf ]; then
-	cd /etc/httpd/conf.d
-	LOCAL_SUM=`md5sum g1b5.conf`
+if [ -e /etc/httpd/conf/httpd.conf ]; then
+	cd /etc/httpd/conf
+	LOCAL_SUM=`md5sum httpd.conf`
 	cd $CONF_DIR
 	
 	echo
 	echo "Apache conf file already exists..."
 	
-	if [ "$LOCAL_SUM" != "`md5sum g1b5.conf`" ]; then
+	if [ "$LOCAL_SUM" != "`md5sum httpd.conf`" ]; then
 		echo "...but outdated! Updating Apache conf file"
 		echo
-		cp -v $APACHE_CONF /etc/httpd/conf.d/g1b5.conf
+		cp -v $APACHE_CONF /etc/httpd/conf/httpd.conf
 		echo
         echo "[   ${bldblu}OK${txtrst}   ]"
 	fi
@@ -73,7 +73,7 @@ else
 	echo
 	echo "Creating Apache conf file..."
 	echo
-    cp -v $APACHE_CONF /etc/httpd/conf.d/g1b5.conf
+    cp -v $APACHE_CONF /etc/httpd/conf/httpd.conf
 	echo
     echo "[   ${bldblu}OK${txtrst}   ]"
 fi
@@ -88,16 +88,6 @@ mv -v /tmp/web/* $SERVER_ROOT
 echo
 echo "[   ${bldblu}OK${txtrst}   ]"
 echo
-
-cat << EOT >> /etc/httpd/conf/httpd.conf
-
-<Location /server-status>
-   SetHandler server-status
-   Order deny,allow
-   Deny from all
-   Allow from 127.0.0.1
-</Location>
-EOT
 
 /etc/init.d/httpd restart
 
