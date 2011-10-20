@@ -14,8 +14,8 @@ CREATE TABLE product
 	PRIMARY KEY (id)
 );
 
-INSERT INTO product(name, price, quantity) VALUES('A Games of Thrones', 10.5, 9);
-INSERT INTO product(name, price, quantity) VALUES('A Clash of Kings', 10.5, 2);
-INSERT INTO product(name, price, quantity) VALUES('A Storm of Swords', 10.5, 12);
-INSERT INTO product(name, price, quantity) VALUES('A Feast for Crows', 10.5, 19);
-INSERT INTO product(name, price, quantity) VALUES('A Dance with a Dragon', 10.5, 3);
+INSERT INTO product(name, price, quantity) VALUES('A Games of Thrones', 11, 9);
+INSERT INTO product(name, price, quantity) VALUES('A Clash of Kings', 11, 2);
+INSERT INTO product(name, price, quantity) VALUES('A Storm of Swords', 11, 12);
+INSERT INTO product(name, price, quantity) VALUES('A Feast for Crows', 11, 19);
+INSERT INTO product(name, price, quantity) VALUES('A Dance with a Dragon', 11, 3);
