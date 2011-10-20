@@ -46,10 +46,7 @@ read -p "Ready?"
 fdisk /dev/sdb
 pvcreate /dev/sdb1
 vgcreate ulr-acg /dev/sdb1
-lvcreate -n drbd-www -L1G ulr-acg
-lvcreate -n drbd-mysql -L1G ulr-acg
-lvcreate -n drbd-ldap -L1G ulr-acg
-#lvcreate -n drbd-named -L1G ulr-acg
+lvcreate -n ulr-data -L3G ulr-acg
 
 echo
 echo "[   ${bldblu}OK${txtrst}   ]"
@@ -62,15 +59,17 @@ echo
 
 echo "Building drbd resource..."
 echo
-drbdadm --force create-md data
+drbdadm --force create-md ulr-data
 modprobe drbd
-drbdadm up data
+drbdadm up ulr-data
 echo
 
 read -p "Is this cluster the clone data reference? (y/n) " -n 1 ANS
 if [ "y" == $ANS ]; then
-    drbdadm -- --overwrite-data-of-peer primary data
+    drbdadm -- --overwrite-data-of-peer primary ulr-data
 fi
+
+
 mkfs.ext4 /dev/drbd1
 mount /dev/drbd1 /mnt
 echo
