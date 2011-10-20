@@ -44,20 +44,20 @@ zone "." IN {
 zone "g1b5.tp.org" IN {
 	type slave;
 	file "g1b5.tp.org.zone";
-	master { 10.0.0.23 };
+	masters { 10.0.0.24 };
 };
 
 
 /*zone "0.0.0.0.9.c.0.0.0.0.0.0.0.0.d.f.ip6.arpa" {
 	type slave;
 	file "rv6.g1b5.tp.org.zone";
-	master { 10.0.0.23 };
+	masters { 10.0.0.24 };
 };*/
 
 zone "10.192.10.in-addr.arpa" {
 	type slave;
 	file "rv4.g1b5.tp.org.zone";
-	master { 10.0.0.23 };
+	masters { 10.0.0.24 };
 };
 
 include "/etc/named.rfc1912.zones";

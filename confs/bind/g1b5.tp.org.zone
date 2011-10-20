@@ -1,19 +1,19 @@
-$ttl 86400
-@		IN	SOA		ns1.g1b5.tp.org. admin.g1b5.tp.org. (
+$ttl 3600
+@		IN	SOA		ns.g1b5.tp.org. admin.g1b5.tp.org. (
 					2011102001
 					10800
 					3600
 					604800
 					38400 )
 ;
-@		IN	NS		ns1.g1b5.tp.org.
+@		IN	NS		ns.g1b5.tp.org.
 @		IN	NS		ns2.g1b5.tp.org.
 ;
 @		IN 	A		10.192.10.50
 ;@		IN 	AAAA	fd00:0:ca:4::1
 ;
-ns1		IN 	A		10.192.10.24
-ns1		IN 	AAAA	fd00:0:c9::501
+ns		IN 	A		10.192.10.24
+ns		IN 	AAAA	fd00:0:c9::501
 ;
 ns2		IN 	A		10.192.10.23
 ns2		IN 	AAAA	fd00:0:ca:4::502

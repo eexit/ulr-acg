@@ -12,9 +12,9 @@ warn=${bldred}!${txtrst}
 CONF_DIR=`pwd`/../confs/bind
 MASTER_CONF=$CONF_DIR/named.conf
 SLAVE_CONF=$CONF_DIR/named.conf.slave
-ZONE_FILE=$CONF_DIR/g1b5.tp.org.zone
-RV4_ZONE_FILE=$CONF_DIR/rv4.g1b5.tp.org.zone
-RV6_ZONE_FILE=$CONF_DIR/rv6.g1b5.tp.org.zone
+ZONE_FILE=g1b5.tp.org.zone
+RV4_ZONE_FILE=rv4.g1b5.tp.org.zone
+RV6_ZONE_FILE=rv6.g1b5.tp.org.zone
 
 if [ "`whoami`" != "root" ]; then
     echo
@@ -45,6 +45,7 @@ else
 	cp -f $SLAVE_CONF /etc/named.conf
 fi
 
+echo
 /etc/init.d/named start
 
 
