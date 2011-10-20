@@ -156,3 +156,13 @@ echo
 echo "[   ${bldblu}OK${txtrst}   ]"
 echo
 echo
+echo "Installing bind..."
+yum -y -q install bind
+echo
+echo "[   ${bldblu}OK${txtrst}   ]"
+echo
+echo "Installing bind-chroot..."
+yum -y -q install bind-chroot
+echo
+echo "[   ${bldblu}OK${txtrst}   ]"
+echo
