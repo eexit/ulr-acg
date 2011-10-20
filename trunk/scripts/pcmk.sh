@@ -11,7 +11,8 @@ warn=${bldred}!${txtrst}
 
 if [ "`whoami`" != "root" ]; then
     echo
-    echo -e "\a${warn}You must be root to run $0! Go away nqqb!"
+    echo -e "${warn}${warn}${warn}\aYou must be root to run $0! Go away nqqb!"
+    echo
     exit 1;
 fi
 
@@ -31,7 +32,7 @@ echo
 echo
 
 if [ ! -d /etc/corosync ]; then
-    echo -e "\a${warn}[ERROR] ${txtrst}corosync package not installed! Run setup.sh firstly..."
+    echo -e "\a${warn}[${bldred}ERROR${txtrst}] ${txtrst}corosync package not installed! Run setup.sh firstly..."
     echo
     exit 1;
 fi
@@ -49,7 +50,7 @@ service {
 }
 EOT
 echo
-echo "${pass}[ OK ]"
+echo "[   ${bldblu}OK${txtrst}   ]"
 echo
 
 /etc/init.d/corosync start
