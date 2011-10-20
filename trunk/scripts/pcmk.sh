@@ -79,7 +79,7 @@ crm_verify -L
 # Registers heartbeat IP state resources
 crm configure primitive ClusterIP ocf:heartbeat:IPaddr2 params ip=$FARM_ADDR cidr_netmask=24 op monitor interval=5s
 # Checks where the IP cluster is running on
-crm resource status ClusterIP
+#crm resource status ClusterIP
 # Registers heartbeat Apache resource
 crm configure primitive WebApp ocf:heartbeat:apache params configfile=/etc/httpd/conf/httpd.conf op monitor interval=10s
 # Forces the Apache and IP resources to run on the same host
@@ -87,18 +87,18 @@ crm configure colocation ulr-acg-project inf: WebApp ClusterIP
 # Forces cluster to start IP resource BEFORE Apache resource when heads
 crm configure order apache-after-ip inf: ClusterIP WebApp
 # Registers DRBD heartbeat resource
-crm cib new drdb
-crm cib drdb configure primitive UlrData ocf:linbit:drbd params drbd_resource=ulr-data op monitor interval=30s
+crm cib new drbd
+crm cib drbd configure primitive UlrData ocf:linbit:drbd params drbd_resource=ulr-data op monitor interval=30s
 # Configures DRBD master/slave
-crm cib drdb configure ms UlrDataClone UlrData meta master-max=1 master-node-max=1 clone-max=2 clone-node-max=1 notify=true
-crm cib commit drdb
+crm cib drbd configure ms UlrDataClone UlrData meta master-max=1 master-node-max=1 clone-max=2 clone-node-max=1 notify=true
+crm cib commit drbd
 # Registers FS heartbeat resource
 crm cib new fs
 crm cib fs configure primitive FS ocf:heartbeat:Filesystem params device="/dev/drbd/by-res/ulr-data" directory="/var/cluster" fstype="ext4"
 # Forces the FS resource runing on the master DRBD clone
 crm cib fs configure colocation fs_on_drbd inf: FS UlrDataClone:Master
 # Forces the FS to run after the DRBD has started
-crm cib fs configure order FS-after-UlrData inf: UlrDataClone:promote FS:start
+crm cib fs configure order fs-after-drbd inf: UlrDataClone:promote FS:start
 # Forces the Apache resource to depend on the FS
 crm cib fs configure colocation WebApp-with-FS inf: WebApp FS
 # Forces the Apache resource to start after the FS resource
