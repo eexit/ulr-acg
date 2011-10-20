@@ -1,31 +1,11 @@
-primitive ClusterIP ocf:heartbeat:IPaddr2 \
-	params ip="10.192.10.50" cidr_netmask="24" \
-	op monitor interval="5s"
-primitive FS ocf:heartbeat:Filesystem \
-	params device="/dev/drbd/by-res/ulr-data" directory="/var/cluster" fstype="ext4"
-primitive UlrData ocf:linbit:drbd \
-	params drbd_resource="ulr-data" \
-	op monitor interval="30s"
-primitive WebApp ocf:heartbeat:apache \
-	params configfile="/etc/httpd/conf/httpd.conf" \
-	op monitor interval="10s"
 primitive MySQL lsb:mysqld
 primitive LDAP lsb:slapd
-ms UlrDataClone UlrData \
-	meta master-max="1" master-node-max="1" clone-max="2" clone-node-max="1" notify="true"
-colocation WebApp-with-FS inf: WebApp FS
-colocation FS-with-UlrDataClone inf: FS UlrDataClone:Master
-colocation WebApp-with-ClusterIP inf: WebApp ClusterIP
-colocation MySQL-with-ClusterIP inf: MySQL ClusterIP
-colocation LDAP-with-ClusterIP inf: LDAP ClusterIP
-order MySQL-after-FS inf: FS MySQL
-order LDAP-after-FS inf: FS LDAP
-order WebApp-after-FS inf: FS WebApp
-order WebApp-after-ClusterIP inf: ClusterIP WebApp
-order FS-after-UlrDataClone inf: UlrDataClone:promote FS:start
-property $id="cib-bootstrap-options" \
-	dc-version="1.1.6-1.fc14-b379478e0a66af52708f56d0302f50b6f13322bd" \
-	cluster-infrastructure="openais" \
-	expected-quorum-votes="2" \
-	stonith-enabled="false" \
-	no-quorum-policy="ignore"
+primitive ClusterIP ocf:heartbeat:IPaddr2 params ip="10.192.10.50" cidr_netmask="24" op monitor interval="5s"
+primitive ClusterFS ocf:heartbeat:Filesystem params device="/dev/drbd/by-res/ulr-data" directory="/var/cluster" fstype="ext4"
+primitive Volume ocf:linbit:drbd params drbd_resource="ulr-data" op monitor interval="30s"
+primitive Apache ocf:heartbeat:apache params configfile="/etc/httpd/conf/httpd.conf" op monitor interval="10s"
+ms VolumeClone Volume meta master-max="1" master-node-max="1" clone-max="2" clone-node-max="1" notify="true"
+group Services ClusterFS ClusterIP Apache MySQL LDAP
+colocation Services-on-VolumeClone inf: Services VolumeClone:Master
+order Services-after-VolumeClone inf: VolumeClone Services:start
+property $id="cib-bootstrap-options" dc-version="1.1.6-1.fc14-b379478e0a66af52708f56d0302f50b6f13322bd" cluster-infrastructure="openais" expected-quorum-votes="2" stonith-enabled="false" no-quorum-policy="ignore" rsc_defaults $id="rsc-options" resource-stickiness="100"
