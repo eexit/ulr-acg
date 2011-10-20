@@ -1,7 +1,8 @@
 ; 10.192.10.0/24 
-
-@	IN SOA 10.192.10.in-addr.arpa. ns1.g1b5.tp.org laurent.g1b5.tp.org. (
-		2011102001	; Serial number (YYYYMMdd)
+$TTL 3600
+$ORIGIN 10.192.10.in-addr.arpa.
+@	IN SOA @ admin.g1b5.tp.org. (
+		2011102002	; Serial number (YYYYMMdd)
 		10800		; Refresh time
 		3600		; Retry time
 		604800		; Expire time
@@ -9,14 +10,14 @@
 )
 
 ; Name server entries
-	IN	NS		ns1.g1b5.tp.org.
+	IN	NS		ns.g1b5.tp.org.
 	IN	NS		ns2.g1b5.tp.org.
 ; IPv4 PTR entries
 
 ; Subnet #1
 $ORIGIN 10.192.10.in-addr.arpa.
 
-24	IN  PTR		ns1.g1b5.tp.org.
+24	IN  PTR		ns.g1b5.tp.org.
 23	IN  PTR     ns2.g1b5.tp.org.
 50	IN  PTR     g1b5.tp.org.
 50	IN  PTR     sql.g1b5.tp.org.
