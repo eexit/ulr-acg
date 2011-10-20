@@ -16,7 +16,7 @@ LDIF_FILE=$CONF_DIR/g1b5.ldif
 
 if [ "`whoami`" != "root" ]; then
     echo
-    echo -e "${warn}${warn}${warn}\aYou must be root to run $0! Go away nqqb!"
+    echo -e "${warn}${warn}${warn} \aYou must be root to run $0! Go away nqqb!"
     echo
     exit 1;
 fi
@@ -33,18 +33,12 @@ echo
 
 /etc/init.d/slapd stop
 
-rm -rf /etc/openldap/slapd.d
-
 cp $LDAP_CONF /etc/openldap/ldap.conf
 
-cp $SLAPD_CONF /etc/openldap/slapd.conf
-
-chown -R ldap:ldap /etc/openldap/
-chown -R ldap:ldap /var/lib/ldap
-chown -R ldap:ldap /var/run/openldap
+cp $LDAP_CONF /etc/openldap/slapd.conf
 
 /etc/init.d/slapd start
 
-ldapadd -c -x -D 'cn=Manager,dc=g1b5,dc=tp,dc=org' -W -f $LDIF_FILE
+ldapadd -x -D 'cn=Manager,dc=g1b5,dc=tp,dc=org' -W -f $LDIF_FILE
  
 

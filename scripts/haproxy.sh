@@ -16,7 +16,7 @@ HAPROXY_ROOT=/etc/haproxy
 
 if [ "`whoami`" != "root" ]; then
     echo
-    echo -e "${warn}${warn}${warn}\aYou must be root to run $0! Go away nqqb!"
+    echo -e "${warn}${warn}${warn} \aYou must be root to run $0! Go away nqqb!"
     echo
     exit 1;
 fi

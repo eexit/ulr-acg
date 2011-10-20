@@ -17,7 +17,7 @@ SERVER_ROOT=/var/www/org/tp/g1b5/web
 
 if [ "`whoami`" != "root" ]; then
     echo
-    echo -e "${warn}${warn}${warn}\aYou must be root to run $0! Go away nqqb!"
+    echo -e "${warn}${warn}${warn} \aYou must be root to run $0! Go away nqqb!"
     echo
     exit 1;
 fi
