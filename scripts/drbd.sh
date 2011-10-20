@@ -44,6 +44,8 @@ echo
 echo "You need to create a new LVM partition (8E) on /dev/sdb..."
 read -p "Ready?"
 fdisk /dev/sdb
+echo "[   ${bldblu}OK${txtrst}   ]"
+echo
 
 if [ 0 -eq "`pvdisplay | grep -c "/dev/sdb1"`" ]; then
     pvcreate /dev/sdb1
@@ -66,28 +68,31 @@ echo
 drbdadm --force create-md ulr-data
 modprobe drbd
 drbdadm up ulr-data
+echo "[   ${bldblu}OK${txtrst}   ]"
 echo
 
 read -p "Is this cluster the clone data reference? (y/n) " -n 1 ANS
 if [ "y" == $ANS ]; then
     drbdadm -- --overwrite-data-of-peer primary ulr-data
 	mkfs.ext4 /dev/drbd1
+	echo "[   ${bldblu}OK${txtrst}   ]"
 else
 	drbdadm primary ulr-data
+	echo "[   ${bldblu}OK${txtrst}   ]"
 fi
 
+echo
 mount /dev/drbd1 /var/cluster
 echo
 
-echo "Moving /var content to the new partition..."
-cp -ax /var/www /var/cluster/www
-cp -ax /var/lib/ldap /var/cluster/lib/ldap
-cp -ax /var/lib/mysql /var/cluster/lib/mysql
-echo
-echo "${warn} Please, edit your /etc/fstab and /var to /dev/drbd1"
-echo
-read -p "Press any key to edit the /etc/fstab file..."
-vim /etc/fstab
+#echo "Moving /var content to the new partition..."
+#cp -ax /var/www /var/cluster/www
+#cp -ax /var/lib/ldap /var/cluster/lib/ldap
+#cp -ax /var/lib/mysql /var/cluster/lib/mysql
+echo "${warn} Please, edit your /etc/fstab and /var/cluster to /dev/drbd1. Want to edit right now? (y/n) " -n 1 ANS
+if [ "y" == $ANS ]; then
+	vim /etc/fstab
+fi
 echo
 echo
 

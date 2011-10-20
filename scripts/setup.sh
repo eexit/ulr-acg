@@ -97,8 +97,6 @@ echo
 echo "[   ${bldblu}OK${txtrst}   ]"
 echo
 
-#sed -i.bak "s/SELINUX=enforcing/SELINUX=permissive/g" /etc/selinux/config
-
 /sbin/chkconfig --del iptables
 service iptables stop
 service ntpd start
@@ -120,20 +118,19 @@ chown apache:apache /var/cluster/www
 echo
 echo "Installing pacemaker..."
 yum -y -q install pacemaker
-echo
 echo "[   ${bldblu}OK${txtrst}   ]"
+echo
 echo
 echo "Installing corosync..."
 yum -y -q install corosync
-echo
 echo "[   ${bldblu}OK${txtrst}   ]"
+echo
 echo
 echo "Installing drbd..."
 yum install -y -q drbd drbd-pacemaker drbd-udev
-echo
 echo "[   ${bldblu}OK${txtrst}   ]"
 echo
-
+echo
 
 #echo "Installing haproxy..."
 #yum -y -q install haproxy
@@ -145,35 +142,34 @@ echo
 #echo
 #echo "[ OK ]"
 #echo
+
 echo "Installing openldap..."
 yum -y -q install openldap
-echo
 echo "[   ${bldblu}OK${txtrst}   ]"
+echo
 echo
 echo "Installing openldap-servers..."
 yum -y -q install openldap-servers
-echo
 echo "[   ${bldblu}OK${txtrst}   ]"
+echo
 echo
 echo "Installing openldap-clients..."
 yum -y -q install openldap-clients
-echo
 echo "[   ${bldblu}OK${txtrst}   ]"
+echo
 echo
 echo "Installing php-ldap..."
 yum -y -q install php-ldap
-echo
 echo "[   ${bldblu}OK${txtrst}   ]"
+echo
 echo
 echo "Installing wget..."
 yum -y -q install wget
-echo
 echo "[   ${bldblu}OK${txtrst}   ]"
 echo
 echo
 echo "Installing bind..."
 yum -y -q install bind bind-chroot
-echo
 echo "[   ${bldblu}OK${txtrst}   ]"
 echo
 echo
