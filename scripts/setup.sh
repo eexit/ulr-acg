@@ -19,8 +19,6 @@ fi
 source ./env
 UC1HOST="mamba14"
 UC2HOST="mamba13"
-#UC1I="eth0"
-#UC2I="eth1"
 UC1v4="10.192.10.24"
 UC2v4="10.192.10.23"
 DRUC1="10.0.0.24"
@@ -66,7 +64,7 @@ if [ 1 -eq "`hostname | grep -c $UC1HOST`" ]; then
     fi
     
     if [ 0 -eq "`ifconfig $ETH | grep -c $UC1v6`" ]; then
-        ifconfig $UC1I inet6 add $UC1v6/64
+        ifconfig $ETH inet6 add $UC1v6/64
     fi
     
     if [ 0 -eq "`cat /etc/hosts | grep -c $UC2HOST`" ]; then
@@ -85,7 +83,7 @@ if [ 1 -eq "`hostname | grep -c $UC2HOST`" ]; then
     fi
     
     if [ 0 -eq "`ifconfig $ETH | grep -c $UC2v6`" ]; then
-        ifconfig $UC2I inet6 add $UC2v6/64
+        ifconfig $ETH inet6 add $UC2v6/64
     fi
     
     if [ 0 -eq "`cat /etc/hosts | grep -c $UC1HOST`" ]; then
