@@ -33,6 +33,8 @@ echo
 
 /etc/init.d/slapd stop
 
+rm -Rf /etc/openldap/slapd.d
+
 cp $LDAP_CONF /etc/openldap/ldap.conf
 
 cp $SLAPD_CONF /etc/openldap/slapd.conf
