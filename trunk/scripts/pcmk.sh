@@ -60,7 +60,7 @@ echo
 if [ 4 -ge "`grep -c "[TOTEM ]" /var/log/messages`" ]; then
     echo "${info}The Corosync Cluster Engine seems to work fine."
 else
-    echo "${warn}An error might occurred! Take a look at your /var/log/messages log..."
+    echo "${warn}${warn}${warn} An error might occurred! Take a look at your /var/log/messages log..."
 fi
 echo
 
@@ -87,11 +87,11 @@ crm configure colocation ulr-acg-project inf: WebApp ClusterIP
 # Forces cluster to start IP resource BEFORE Apache resource when heads
 crm configure order apache-after-ip inf: ClusterIP WebApp
 # Registers DRBD heartbeat resource
-crm cib new drbd
-crm cib drbd configure primitive UlrData ocf:linbit:drbd params drbd_resource=ulr-data op monitor interval=30s
+crm cib new drdb
+crm cib drdb configure primitive UlrData ocf:linbit:drbd params drbd_resource=ulr-data op monitor interval=30s
 # Configures DRBD master/slave
-crm cib drbd configure ms UlrDataClone UlrData meta master-max=1 master-node-max=1 clone-max=2 clone-node-max=1 notify=true
-crm cib commit drbd
+crm cib drdb configure ms UlrDataClone UlrData meta master-max=1 master-node-max=1 clone-max=2 clone-node-max=1 notify=true
+crm cib commit drdb
 # Registers FS heartbeat resource
 crm cib new fs
 crm cib fs configure primitive FS ocf:heartbeat:Filesystem params device="/dev/drbd/by-res/ulr-data" directory="/var/cluster" fstype="ext4"
