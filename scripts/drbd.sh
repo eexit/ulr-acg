@@ -57,7 +57,7 @@ modprobe drbd
 drbdadm up ulracg
 echo
 
-read -p "Clone cluster data from this node? (y/n)" -n 1 ANS
+read -p "Is this cluster the clone data reference? (y/n)" -n 1 ANS
 if [ "y" == $ANS ]; then
     drbdadm primary --force ulracg
 fi
@@ -65,12 +65,14 @@ mkfs.ext4 /dev/drbd1
 echo
 
 echo "Moving /var content to the new partition..."
-cd /var
-cp -ax * /dev/drbd1
-cd /
-mv var var.old
-mkdir var
-mount /dev/drbd1 /var
+mkdir -p --verbose /dev/drbd1/var/www
+#mkdir -p --verbose /dev/drbd1/var/
+cd /var/www
+cp -ax * /dev/drbd1/var/www
+cd ..
+mv www www.old
+mkdir www
+mount /dev/drbd1/var/www /var/www
 echo
 echo "${warn}Please, edit your /etc/fstab and /var to /dev/drbd1"
 echo
