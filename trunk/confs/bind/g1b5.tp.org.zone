@@ -1,23 +1,28 @@
 $ttl 86400
-g1b5.tp.org. IN SOA ns1.g1b5.tp.org. tpuser.g1b5.tp.org. (
-		2011100401
-		10800
-		3600
-		604800
-		38400 )
+@		IN	SOA		ns1.g1b5.tp.org. admin.g1b5.tp.org. (
+					2011100401
+					10800
+					3600
+					604800
+					38400 )
 ;
-@    IN NS   ns1.tp4.org.
-@    IN NS   ns2.tp4.org.
+@		IN	NS		ns1.g1b5.tp.org.
+@		IN	NS		ns2.g1b5.tp.org.
 ;
-@    IN A    192.168.4.1
-@    IN AAAA fd00:0:ca:4::1
+@		IN 	A		10.192.10.50
+;@		IN 	AAAA	fd00:0:ca:4::1
 ;
-ns1  IN A    192.168.4.1
-ns1  IN AAAA fd00:0:ca:4::1
+ns1		IN 	A		10.192.10.24
+ns1		IN 	AAAA	fd00:0:c9::501
 ;
-ns2  IN A    192.168.4.2
-ns2  IN AAAA fd00:0:ca:4::2
+ns2		IN 	A		10.192.10.23
+ns2		IN 	AAAA	fd00:0:ca:4::502
 ;
-mail IN A    192.168.4.3
-mail IN AAAA fd00:0:ca:4::3
-
+www		IN 	A		10.192.10.50
+;www	IN 	AAAA	fd00:0:ca:4::1
+;
+sql		IN 	A		10.192.10.50
+;sql	IN 	AAAA	fd00:0:ca:4::1
+;
+ldap	IN 	A		10.192.10.50
+;ldap	IN	AAAA	fd00:0:ca:4::1

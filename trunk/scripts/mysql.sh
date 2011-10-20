@@ -11,6 +11,7 @@ warn=${bldred}!${txtrst}
 
 $ROOT_PASSWD = "iammysqlroot"
 $SQL_SCRIPT = `pwd`/../confs/mysql/produit.sql
+$MYSQL_CONF = `pwd`/../confs/mysql/my.cnf
 
 if [ "`whoami`" != "root" ]; then
     echo
@@ -23,16 +24,20 @@ clear
 
 echo
 echo
-echo "================"
-echo "= MySQL Script ="
-echo "================"
+echo "=============================="
+echo "= MySQL Configuration Script ="
+echo "=============================="
 echo
 echo
 
-/etc/init.d/mysqld start
+/etc/init.d/mysqld stop
+
+cp -f $MYSQL_CONF /etc/my.cnf
 
 chmod -R 755 /var/log
-chown -R mysql:mysql /var/lib/mysql
+chown -R mysql:mysql /var/cluster/mysql
+
+/etc/init.d/mysql start
 
 mysqladmin -u root password $ROOT_PASSWD
 
