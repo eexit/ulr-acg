@@ -64,7 +64,6 @@ if [ -e /etc/httpd/conf/httpd.conf ]; then
 		echo "...but outdated! Updating Apache conf file"
 		echo
 		cp -v $APACHE_CONF /etc/httpd/conf/httpd.conf
-		echo
         echo "[   ${bldblu}OK${txtrst}   ]"
 	fi
 	cd $HERE
@@ -74,18 +73,19 @@ else
 	echo "Creating Apache conf file..."
 	echo
     cp -v $APACHE_CONF /etc/httpd/conf/httpd.conf
-	echo
     echo "[   ${bldblu}OK${txtrst}   ]"
 fi
 
 echo
-echo "Staging WebApplication into Web root directory..."
+read -p "Deploy WebApplication? (y/n): " -n 1 ANS
+if [ "y" == $ANS ]; then
+    echo "Staging WebApplication into Web root directory..."
+    echo
+    cp -ax $HERE/../lib/webapp/* $SERVER_ROOT
+    find $SERVER_ROOT -name ".svn" -type d -exec rm -rf {} \;
+    echo "[   ${bldblu}OK${txtrst}   ]"
+fi
 echo
-cp -ax $HERE/../lib/webapp/* $SERVER_ROOT
-find $SERVER_ROOT -name ".svn" -type d -exec rm -rf {} \;
-chown -R apache:apache $SERVER_ROOT
-echo
-echo "[   ${bldblu}OK${txtrst}   ]"
 echo
 
 /etc/init.d/httpd restart
