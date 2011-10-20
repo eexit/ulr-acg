@@ -67,22 +67,22 @@ echo
 read -p "Is this cluster the clone data reference? (y/n) " -n 1 ANS
 if [ "y" == $ANS ]; then
     drbdadm -- --overwrite-data-of-peer primary ulr-data
+	mkfs.ext4 /dev/drbd1
+else
+	drbdadm primary ulr-data
 fi
 
+if [ ! -d /var/cluster ]; then
+	mkdir /var/cluster
+fi
 
-mkfs.ext4 /dev/drbd1
-mount /dev/drbd1 /mnt
+mount /dev/drbd1 /var/cluster
 echo
 
 echo "Moving /var content to the new partition..."
-mkdir -p --verbose /dev/drbd1/var/www
-#mkdir -p --verbose /dev/drbd1/var/
-cd /var/www
-cp -ax * /dev/drbd1/var/www
-cd ..
-mv www www.old
-mkdir www
-mount /dev/drbd1/var/www /var/www
+cp -ax /var/www /var/cluster/www
+cp -ax /var/ldap /var/cluster/ldap
+#cp -ax /var/www /var/cluster/www
 echo
 echo "${warn} Please, edit your /etc/fstab and /var to /dev/drbd1"
 echo
