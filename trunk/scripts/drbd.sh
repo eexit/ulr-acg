@@ -72,17 +72,13 @@ else
 	drbdadm primary ulr-data
 fi
 
-if [ ! -d /var/cluster ]; then
-	mkdir /var/cluster
-fi
-
 mount /dev/drbd1 /var/cluster
 echo
 
 echo "Moving /var content to the new partition..."
 cp -ax /var/www /var/cluster/www
-cp -ax /var/ldap /var/cluster/ldap
-#cp -ax /var/www /var/cluster/www
+cp -ax /var/lib/ldap /var/cluster/lib/ldap
+cp -ax /var/lib/mysql /var/cluster/lib/mysql
 echo
 echo "${warn} Please, edit your /etc/fstab and /var to /dev/drbd1"
 echo

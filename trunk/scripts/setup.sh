@@ -101,6 +101,9 @@ echo
 
 /sbin/chkconfig --del iptables
 service iptables stop
+if [ ! -d /var/cluster ]; then
+	mkdir /var/cluster
+fi
 
 echo
 echo "Installing pacemaker..."
