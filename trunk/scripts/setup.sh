@@ -38,9 +38,9 @@ echo
 echo "Script developped by Joris Berthelot and Laurent Le Moine Copyright (c) 2011"
 echo
 echo
-read -p "Which is your primary ethernet interface? (ethX): " -n 4 ETH
+read -p "Which is your primary ethernet interface? Specify ONLY the interface number: " -n 1 NUM
 echo -e "\nWorking ethernet interface: $ETH"
-
+ETH="eth$NUM"
 IP=`ip addr show $ETH | grep "inet " | tail -n 1 | sed 's/\// /' | awk '{print $2}'`
 
 echo "Hostname: `hostname`"
@@ -114,7 +114,7 @@ echo
 echo "[   ${bldblu}OK${txtrst}   ]"
 echo
 echo "Installing drbd..."
-yum install -y -q drbd-pacemaker drbd-udev
+yum install -y -q drbd drbd-pacemaker drbd-udev
 echo
 echo "[   ${bldblu}OK${txtrst}   ]"
 echo
@@ -154,3 +154,5 @@ echo "Installing wget..."
 yum -y -q install wget
 echo
 echo "[   ${bldblu}OK${txtrst}   ]"
+echo
+echo
