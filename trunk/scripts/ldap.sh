@@ -37,6 +37,10 @@ cp $LDAP_CONF /etc/openldap/ldap.conf
 
 cp $SLAPD_CONF /etc/openldap/slapd.conf
 
+mkdir /var/cluster/ldap
+
+chown ldap:ldap /var/cluster/ldap
+
 /etc/init.d/slapd start
 
 ldapadd -x -D 'cn=Manager,dc=g1b5,dc=tp,dc=org' -W -f $LDIF_FILE
