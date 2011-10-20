@@ -1,0 +1,23 @@
+; 10.192.10.0/24 
+
+@	IN SOA 10.192.10.in-addr.arpa. laurent.tp4.org. (
+		2011100401	; Serial number (YYYYMMdd)
+		10800		; Refresh time
+		3600		; Retry time
+		604800		; Expire time
+		38400		; Default TTL (bind 8 ignores this, bind 9 needs it)
+)
+
+                                ; Name server entries
+                                IN     NS     ns1.g1b5.tp.org.
+                                IN     NS     ns2.g1b5.tp.org.
+; IPv6 PTR entries
+
+; Subnet #1
+$ORIGIN 10.192.10.in-addr.arpa.
+
+50	IN  PTR		ns1.g1b5.tp.org.
+50	IN  PTR     ns2.g1b5.tp.org.
+50	IN  PTR     g1b5.tp.org.
+50	IN  PTR     sql.g1b5.tp.org.
+50	IN	PTR		ldap.g1b5.tp.org.

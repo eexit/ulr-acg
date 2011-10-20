@@ -1,0 +1,23 @@
+$ttl 86400
+g1b5.tp.org. IN SOA ns1.g1b5.tp.org. tpuser.g1b5.tp.org. (
+		2011100401
+		10800
+		3600
+		604800
+		38400 )
+;
+@    IN NS   ns1.tp4.org.
+@    IN NS   ns2.tp4.org.
+;
+@    IN A    192.168.4.1
+@    IN AAAA fd00:0:ca:4::1
+;
+ns1  IN A    192.168.4.1
+ns1  IN AAAA fd00:0:ca:4::1
+;
+ns2  IN A    192.168.4.2
+ns2  IN AAAA fd00:0:ca:4::2
+;
+mail IN A    192.168.4.3
+mail IN AAAA fd00:0:ca:4::3
+
