@@ -33,7 +33,7 @@ echo "Script developped by Joris Berthelot and Laurent Le Moine Copyright (c) 20
 echo
 echo
 
-if [ ! -d /etc/drbd ]; then
+if [ ! -e /etc/drbd.conf ]; then
     echo -e "\a[${bldred}ERROR${txtrst}] drbd package not installed! Run setup.sh firstly..."
     echo
     exit 1;
@@ -41,28 +41,38 @@ fi
 
 echo "Creating clone partition..."
 echo
-lvcreate -n drbd -L 1G ulr-acg
+echo "You need to create a new LVM partition (8E) on /dev/sdb..."
+read -p "Ready?"
+fdisk /dev/sdb
+pvcreate /dev/sdb1
+vgcreate ulr-acg /dev/sdb1
+lvcreate -n drbd-www -L1G ulr-acg
+lvcreate -n drbd-mysql -L1G ulr-acg
+lvcreate -n drbd-ldap -L1G ulr-acg
+#lvcreate -n drbd-named -L1G ulr-acg
+
 echo
 echo "[   ${bldblu}OK${txtrst}   ]"
 
 echo "Configuring drbd..."
-cp -f $DRBD_CONF /etc/drbd
+cp -f $DRBD_CONF /etc/
 echo
 echo "[   ${bldblu}OK${txtrst}   ]"
 echo
 
 echo "Building drbd resource..."
 echo
-drbdadm --force create-md ulracg
+drbdadm --force create-md data
 modprobe drbd
-drbdadm up ulracg
+drbdadm up data
 echo
 
-read -p "Is this cluster the clone data reference? (y/n)" -n 1 ANS
+read -p "Is this cluster the clone data reference? (y/n) " -n 1 ANS
 if [ "y" == $ANS ]; then
-    drbdadm primary --force ulracg
+    drbdadm -- --overwrite-data-of-peer primary data
 fi
 mkfs.ext4 /dev/drbd1
+mount /dev/drbd1 /mnt
 echo
 
 echo "Moving /var content to the new partition..."
