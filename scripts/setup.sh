@@ -106,7 +106,16 @@ yum remove -y -q openldap-2.4.23-4.fc14.i686
 
 if [ ! -d /var/cluster ]; then
 	mkdir /var/cluster
+	
 fi
+
+mkdir /var/cluster/mysql
+mkdir /var/cluster/www
+mkdir /var/cluster/ldap
+chmod -R 755 /var/cluster
+chown mysql:mysql /var/cluster/mysql
+chown ldap:ldap /var/cluster/ldap
+chown apache:apache /var/cluster/www
 
 echo
 echo "Installing pacemaker..."

@@ -9,9 +9,9 @@ info=${bldwht}*${txtrst}        # Feedback
 pass=${bldblu}*${txtrst}
 warn=${bldred}!${txtrst}
 
-$ROOT_PASSWD = "iammysqlroot"
-$SQL_SCRIPT = `pwd`/../confs/mysql/produit.sql
-$MYSQL_CONF = `pwd`/../confs/mysql/my.cnf
+ROOT_PASSWD="iammysqlroot"
+SQL_SCRIPT=`pwd`/../confs/mysql/produit.sql
+MYSQL_CONF=`pwd`/../confs/mysql/my.cnf
 
 if [ "`whoami`" != "root" ]; then
     echo
@@ -27,22 +27,24 @@ echo
 echo "=============================="
 echo "= MySQL Configuration Script ="
 echo "=============================="
-echo
+echo $MYSQL_CONF
 echo
 
 /etc/init.d/mysqld stop
+
+
 
 cp -f $MYSQL_CONF /etc/my.cnf
 
 chmod -R 755 /var/log
 chown -R mysql:mysql /var/cluster/mysql
 
-/etc/init.d/mysql start
+/etc/init.d/mysqld start
 
 mysqladmin -u root password $ROOT_PASSWD
 
 echo "Création de la base et peuplement"
 
-mysql -f -u root --password < /home/tpuser/ulr-acg/confs/mysql/produit.sql
+mysql -f -u root --password < $SQL_SCRIPT
  
 
