@@ -11,7 +11,7 @@ warn=${bldred}!${txtrst}
 
 if [ "`whoami`" != "root" ]; then
     echo
-    echo -e "${warn}\aYou must be root to run $0! Go away nqqb!"
+    echo -e "${warn}${warn}${warn} ${bldred}\aYou must be root to run $0! Go away nqqb!"
     exit 1;
 fi
 
