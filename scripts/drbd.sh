@@ -44,16 +44,20 @@ echo
 echo "You need to create a new LVM partition (8E) on /dev/sdb..."
 read -p "Ready?"
 fdisk /dev/sdb
-pvcreate /dev/sdb1
-vgcreate ulr-acg /dev/sdb1
-lvcreate -n ulr-data -L3G ulr-acg
 
-echo
+if [ 0 -eq "`pvdisplay | grep -c "/dev/sdb1"`" ]; then
+    pvcreate /dev/sdb1
+fi
+if [ 0 -eq "`vgdisplay | grep -c "ulr-acg"`" ]; then
+    vgcreate ulr-acg /dev/sdb1
+fi
+if [ 0 -eq "`lvs | grep -c "ulr-data"`" ]; then
+    lvcreate -n ulr-data -L1G ulr-acg
+fi
 echo "[   ${bldblu}OK${txtrst}   ]"
 
 echo "Configuring drbd..."
 cp -f $DRBD_CONF /etc/
-echo
 echo "[   ${bldblu}OK${txtrst}   ]"
 echo
 
