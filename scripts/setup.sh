@@ -39,8 +39,8 @@ echo "Script developped by Joris Berthelot and Laurent Le Moine Copyright (c) 20
 echo
 echo
 read -p "Which is your primary ethernet interface? Specify ONLY the interface number: " -n 1 NUM
-echo -e "\nWorking ethernet interface: $ETH"
 ETH="eth$NUM"
+echo -e "\nWorking ethernet interface: $ETH"
 IP=`ip addr show $ETH | grep "inet " | tail -n 1 | sed 's/\// /' | awk '{print $2}'`
 
 echo "Hostname: `hostname`"
@@ -157,12 +157,9 @@ echo "[   ${bldblu}OK${txtrst}   ]"
 echo
 echo
 echo "Installing bind..."
-yum -y -q install bind
+yum -y -q install bind bind-chroot
 echo
 echo "[   ${bldblu}OK${txtrst}   ]"
 echo
-echo "Installing bind-chroot..."
-yum -y -q install bind-chroot
 echo
-echo "[   ${bldblu}OK${txtrst}   ]"
 echo

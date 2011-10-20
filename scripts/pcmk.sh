@@ -57,7 +57,7 @@ echo
 
 echo "Checking status of corosync..."
 echo
-if [ 4 -gte "`grep -c "[TOTEM ]" /var/log/messages`" ]; then
+if [ 4 -ge "`grep -c "[TOTEM ]" /var/log/messages`" ]; then
     echo "${info}The Corosync Cluster Engine seems to work fine."
 else
     echo "${warn}An error might occurred! Take a look at your /var/log/messages log..."
@@ -88,21 +88,21 @@ crm configure colocation ulr-acg-project inf: WebApp ClusterIP
 crm configure order apache-after-ip inf: ClusterIP WebApp
 # Registers DRBD heartbeat resource
 crm cib new drbd
-crm cib drbd configure primitive VarData ocf:linbit:drbd params drbd_resource=ulracg op monitor interval=30s
+crm cib drbd configure primitive UlrData ocf:linbit:drbd params drbd_resource=ulr-data op monitor interval=30s
 # Configures DRBD master/slave
-crm cib drbd configure ms VarDataClone VarData meta master-max=1 master-node-max=1 clone-max=2 clone-node-max=1 notify=true
+crm cib drbd configure ms UlrDataClone UlrData meta master-max=1 master-node-max=1 clone-max=2 clone-node-max=1 notify=true
 crm cib commit drbd
 # Registers FS heartbeat resource
 crm cib new fs
-crm cib fs configure primitive WebFS ocf:heartbeat:Filesystem params device="/dev/drbd/by-res/ulracg" directory="/var/www" fstype="ext4"
+crm cib fs configure primitive FS ocf:heartbeat:Filesystem params device="/dev/drbd/by-res/ulr-data" directory="/var/cluster" fstype="ext4"
 # Forces the FS resource runing on the master DRBD clone
-crm cib fs configure colocation webfs_on_drbd inf: WebFS VarDataClone:Master
+crm cib fs configure colocation fs_on_drbd inf: FS UlrDataClone:Master
 # Forces the FS to run after the DRBD has started
-crm cib fs configure order WebFS-after-VarData inf: VarDataClone:promote WebFS:start
+crm cib fs configure order FS-after-UlrData inf: UlrDataClone:promote FS:start
 # Forces the Apache resource to depend on the FS
-crm cib fs configure colocation WebApp-with-WebFS inf: WebApp WebFS
+crm cib fs configure colocation WebApp-with-FS inf: WebApp FS
 # Forces the Apache resource to start after the FS resource
-crm cib fs configure order WebApp-after-WebFS inf: WebFS WebApp
+crm cib fs configure order WebApp-after-FS inf: FS WebApp
 crm cib commit fs
 echo
 echo
