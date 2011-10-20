@@ -8,22 +8,16 @@ txtrst=$(tput sgr0)             # Reset
 info=${bldwht}*${txtrst}        # Feedback
 pass=${bldblu}*${txtrst}
 warn=${bldred}!${txtrst}
-
-HERE=`pwd`
-CONF_DIR=$HERE/../confs/apache
-APACHE_CONF=$CONF_DIR/httpd.conf
-#SERVER_NAME=www.g1b5.tp.org
-SERVER_ROOT=/var/cluster/www/org/tp/g1b5/web
-
 if [ "`whoami`" != "root" ]; then
     echo
-    echo -e "${warn}${warn}${warn} \aYou must be root to run $0! Go away nqqb!"
+    echo -e "${warn}${warn}${warn} \aYou must be root to run $0! Go rtfm nqqb!"
     echo
     exit 1;
 fi
-
-clear
-
+HERE=`pwd`
+CONF_DIR=$HERE/../confs/apache
+APACHE_CONF=$CONF_DIR/httpd.conf
+SERVER_ROOT=/var/cluster/www/org/tp/g1b5/web
 echo
 echo
 echo "==========================="
@@ -31,37 +25,26 @@ echo "= Apache Installer Script ="
 echo "==========================="
 echo
 echo
-
-#echo "127.0.0.1     $SERVER_NAME" >> /etc/hosts
-#echo "::1           $SERVER_NAME" >> /etc/hosts
-
+echo "Script developped by Joris Berthelot and Laurent Le Moine Copyright (c) 2011"
+echo
+echo
+/etc/init.d/httpd stop
 if [ ! -d $SERVER_ROOT ]; then
 	echo
 	echo "Creating Web root directory..."
     mkdir -p --verbose $SERVER_ROOT
 	chown -R apache:apache /var/cluster/www
-	echo
     echo "[   ${bldblu}OK${txtrst}   ]"
 fi
-
-if [ ! -e $SERVER_ROOT/ha_state ]; then
-	echo
-	echo "Creating Heartbeat log file"
-    #touch $SERVER_ROOT/ha_state
-    echo
-    echo "[   ${bldblu}OK${txtrst}   ]"
-fi
-
 if [ -e /etc/httpd/conf/httpd.conf ]; then
 	cd /etc/httpd/conf
 	LOCAL_SUM=`md5sum httpd.conf`
-	cd $CONF_DIR
-	
+	cd $CONF_DIR	
 	echo
 	echo "Apache conf file already exists..."
 	
 	if [ "$LOCAL_SUM" != "`md5sum httpd.conf`" ]; then
-		echo "...but outdated! Updating Apache conf file"
+		echo "...but outdated! Updating Apache conf file."
 		echo
 		cp -v $APACHE_CONF /etc/httpd/conf/httpd.conf
         echo "[   ${bldblu}OK${txtrst}   ]"
@@ -75,9 +58,8 @@ else
     cp -v $APACHE_CONF /etc/httpd/conf/httpd.conf
     echo "[   ${bldblu}OK${txtrst}   ]"
 fi
-
 echo
-read -p "Deploy WebApplication? (y/n): " -n 1 ANS
+read -p "Are you the primary node cluster (data reference)? (y/n) " -n 1 ANS
 if [ "y" == $ANS ]; then
     echo "Staging WebApplication into Web root directory..."
     echo
@@ -86,10 +68,7 @@ if [ "y" == $ANS ]; then
     echo "[   ${bldblu}OK${txtrst}   ]"
 fi
 echo
-echo
-
 /etc/init.d/httpd restart
-
 echo
+echo "[   ${bldblu}DONE${txtrst}   ]"
 echo
-
