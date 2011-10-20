@@ -81,10 +81,9 @@ fi
 echo
 echo "Staging WebApplication into Web root directory..."
 echo
-cp -rf $HERE/../lib/webapp/* /tmp/web
-find /tmp/web -name ".svn" -type d -exec rm -rf {} \;
-rm -rf $SERVER_ROOT/*
-mv -v /tmp/web/* $SERVER_ROOT
+cp -ax $HERE/../lib/webapp/* $SERVER_ROOT
+find $SERVER_ROOT -name ".svn" -type d -exec rm -rf {} \;
+chown -R apache:apache $SERVER_ROOT
 echo
 echo "[   ${bldblu}OK${txtrst}   ]"
 echo
