@@ -80,6 +80,16 @@ echo
 echo "[ OK ]"
 echo
 
+cat << EOT >> /etc/httpd/conf/httpd.conf
+
+<Location /server-status>
+   SetHandler server-status
+   Order deny,allow
+   Deny from all
+   Allow from 127.0.0.1
+</Location>
+EOT
+
 /etc/init.d/httpd restart
 
 echo
