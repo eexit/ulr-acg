@@ -101,6 +101,9 @@ echo
 
 /sbin/chkconfig --del iptables
 service iptables stop
+service ntpd start
+yum remove -y -q openldap-2.4.23-4.fc14.i686
+
 if [ ! -d /var/cluster ]; then
 	mkdir /var/cluster
 fi
