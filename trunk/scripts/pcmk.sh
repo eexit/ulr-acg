@@ -78,7 +78,7 @@ crm_verify -L
 # Registers heartbeat IP state resources
 crm configure primitive ClusterIP ocf:heartbeat:IPaddr2 params ip=$FARM_ADDR cidr_netmask=24 op monitor interval=5s
 # Checks where the IP cluster is running on
-#crm resource status ClusterIP
+crm resource status ClusterIP
 # Registers heartbeat Apache resource
 crm configure primitive WebApp ocf:heartbeat:apache params configfile=/etc/httpd/conf/httpd.conf op monitor interval=10s
 # Forces the Apache and IP resources to run on the same host
@@ -93,15 +93,15 @@ crm cib drbd configure ms VarDataClone VarData meta master-max=1 master-node-max
 crm cib commit drbd
 # Registers FS heartbeat resource
 crm cib new fs
-crm cib fs configure primitive FS ocf:heartbeat:Filesystem params device="/dev/drbd/by-res/ulracg" directory="/var" fstype="ext4"
+crm cib fs configure primitive WebFS ocf:heartbeat:Filesystem params device="/dev/drbd/by-res/ulracg" directory="/var/www" fstype="ext4"
 # Forces the FS resource runing on the master DRBD clone
-crm cib fs configure colocation fs_on_drbd inf: FS VarDataClone:Master
+crm cib fs configure colocation webfs_on_drbd inf: WebFS VarDataClone:Master
 # Forces the FS to run after the DRBD has started
-crm cib fs configure order FS-after-VarData inf: VarDataClone:promote FS:start
+crm cib fs configure order WebFS-after-VarData inf: VarDataClone:promote WebFS:start
 # Forces the Apache resource to depend on the FS
-crm cib fs configure colocation WebApp-with-FS inf: WebApp FS
+crm cib fs configure colocation WebApp-with-WebFS inf: WebApp WebFS
 # Forces the Apache resource to start after the FS resource
-crm cib fs configure order WebApp-after-FS inf: FS WebApp
+crm cib fs configure order WebApp-after-WebFS inf: WebFS WebApp
 crm cib commit fs
 echo
 echo
