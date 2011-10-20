@@ -1,0 +1,22 @@
+primitive drbd_mysql ocf:linbit:drbd \
+        params drbd_resource="ulr-data" \
+        op monitor interval="15s"
+primitive fs_mysql ocf:heartbeat:Filesystem \
+        params device="/dev/drbd/by-res/ulr-data" directory="/var/cluster" fstype="ext4"
+primitive ip_mysql ocf:heartbeat:IPaddr2 \
+        params ip="10.192.10.50" nic="eth0"
+primitive mysqld ocf:heartbeat:mysql
+primitive apache ocf:heartbeat:apache
+primitive ldap lsb:slapd
+
+group mysql fs_mysql ip_mysql mysqld apache ldap
+ms ms_drbd_mysql drbd_mysql \
+        meta master-max="1" master-node-max="1" clone-max="2" clone-node-max="1" notify="true"
+colocation mysql_on_drbd inf: mysql ms_drbd_mysql:Master
+order mysql_after_drbd inf: ms_drbd_mysql:promote mysql:start
+property $id="cib-bootstrap-options" \
+        no-quorum-policy="ignore" \
+        stonith-enabled="false" \
+        expected-quorum-votes="2" \
+        dc-version="1.0.4-2ec1d189f9c23093bf9239a980534b661baf782d" \
+        cluster-infrastructure="openais"
