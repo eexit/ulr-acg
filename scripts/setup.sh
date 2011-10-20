@@ -11,7 +11,8 @@ warn=${bldred}!${txtrst}
 
 if [ "`whoami`" != "root" ]; then
     echo
-    echo -e "${warn}${warn}${warn} ${bldred}\aYou must be root to run $0! Go away nqqb!"
+    echo -e "${warn}${warn}${warn}\aYou must be root to run $0! Go away nqqb!"
+    echo
     exit 1;
 fi
 
@@ -100,7 +101,7 @@ if [ 1 -eq "`hostname | grep -c $UC2HOST`" ]; then
 fi
 
 echo
-echo "${pass}[ OK ]"
+echo "[   ${bldblu}OK${txtrst}   ]"
 echo
 
 #sed -i.bak "s/SELINUX=enforcing/SELINUX=permissive/g" /etc/selinux/config
@@ -112,17 +113,17 @@ echo
 echo "Installing pacemaker..."
 yum -y -q install pacemaker
 echo
-echo "${pass}[ OK ]"
+echo "[   ${bldblu}OK${txtrst}   ]"
 echo
 echo "Installing corosync..."
 yum -y -q install corosync
 echo
-echo "${pass}[ OK ]"
+echo "[   ${bldblu}OK${txtrst}   ]"
 echo
 echo "Installing drbd..."
 yum install -y -q drbd-pacemaker drbd-udev
 echo
-echo "${pass}[ OK ]"
+echo "[   ${bldblu}OK${txtrst}   ]"
 echo
 
 
@@ -139,27 +140,27 @@ echo
 echo "Installing openldap..."
 yum -y -q install openldap
 echo
-echo "${pass}[ OK ]"
+echo "[   ${bldblu}OK${txtrst}   ]"
 echo
 echo "Installing openldap-servers..."
 yum -y -q install openldap-servers
 echo
-echo "${pass}[ OK ]"
+echo "[   ${bldblu}OK${txtrst}   ]"
 echo
 echo "Installing openldap-clients..."
 yum -y -q install openldap-clients
 echo
-echo "${pass}[ OK ]"
+echo "[   ${bldblu}OK${txtrst}   ]"
 echo
 echo "Installing php-ldap..."
 yum -y -q install php-ldap
 echo
-echo "${pass}[ OK ]"
+echo "[   ${bldblu}OK${txtrst}   ]"
 echo
 echo "Installing wget..."
 yum -y -q install wget
 echo
-echo "${pass}[ OK ]"
+echo "[   ${bldblu}OK${txtrst}   ]"
 
 
 

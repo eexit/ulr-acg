@@ -23,7 +23,7 @@ echo
 echo
 
 if [ ! -d $HA_ROOT ]; then
-    echo "[ERROR] heartbeat package not installed! Run setup.sh firstly..."
+    echo "[${bldred}ERROR${txtrst}] heartbeat package not installed! Run setup.sh firstly..."
     echo
     exit 1;
 fi

@@ -11,7 +11,8 @@ warn=${bldred}!${txtrst}
 
 if [ "`whoami`" != "root" ]; then
     echo
-    echo -e "\a${warn}You must be root to run $0! Go away nqqb!"
+    echo -e "${warn}${warn}${warn}\aYou must be root to run $0! Go away nqqb!"
+    echo
     exit 1;
 fi
 
@@ -33,7 +34,7 @@ echo
 echo
 
 if [ ! -d /etc/drbd ]; then
-    echo -e "\a${warn}[ERROR] ${txtrst}drbd package not installed! Run setup.sh firstly..."
+    echo -e "\a[${bldred}ERROR${txtrst}] drbd package not installed! Run setup.sh firstly..."
     echo
     exit 1;
 fi
@@ -42,12 +43,12 @@ echo "Creating clone partition..."
 echo
 lvcreate -n drbd -L 1G ulr-acg
 echo
-echo "${pass}[ OK ]"
+echo "[   ${bldblu}OK${txtrst}   ]"
 
 echo "Configuring drbd..."
 cp -f $DRBD_CONF /etc/drbd
 echo
-echo "${pass}[ OK ]"
+echo "[   ${bldblu}OK${txtrst}   ]"
 echo
 
 echo "Building drbd resource..."
@@ -74,7 +75,7 @@ mv www www.old
 mkdir www
 mount /dev/drbd1/var/www /var/www
 echo
-echo "${warn}Please, edit your /etc/fstab and /var to /dev/drbd1"
+echo "${warn} Please, edit your /etc/fstab and /var to /dev/drbd1"
 echo
 read -p "Press any key to edit the /etc/fstab file..."
 vim /etc/fstab
