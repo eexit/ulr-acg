@@ -126,8 +126,8 @@ yum -y -q install openldap-clients
 echo "[   ${bldblu}OK${txtrst}   ]"
 echo
 echo
-echo "Installing php-ldap..."
-yum -y -q install php-ldap
+echo "Installing php-ldap, php-mysql..."
+yum -y -q install php-ldap php-mysql
 echo "[   ${bldblu}OK${txtrst}   ]"
 echo
 echo
