@@ -95,15 +95,6 @@ echo
 service iptables stop # Prevents from undesired firewalling
 service ntpd start # Cluster arch need to be time synced
 yum remove -y -q openldap-2.4.23-4.fc14.i686 # Removes olidsh openldap
-if [ ! -d /var/cluster ]; then
-	mkdir -p /var/cluster/mysql
-    mkdir /var/cluster/www
-    mkdir /var/cluster/ldap
-    chmod -R 755 /var/cluster
-    chown mysql:mysql /var/cluster/mysql
-    chown ldap:ldap /var/cluster/ldap
-    chown apache:apache /var/cluster/www
-fi
 echo
 echo "Installing pacemaker..."
 yum -y -q install pacemaker
