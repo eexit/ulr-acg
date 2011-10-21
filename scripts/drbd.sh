@@ -72,6 +72,15 @@ else
 fi
 echo
 mount /dev/drbd1 /var/cluster
+if [ ! -d /var/cluster ]; then
+	mkdir -p /var/cluster/mysql
+    mkdir /var/cluster/www
+    mkdir /var/cluster/ldap
+    chmod -R 755 /var/cluster
+    chown mysql:mysql /var/cluster/mysql
+    chown ldap:ldap /var/cluster/ldap
+    chown apache:apache /var/cluster/www
+fi
 echo
 read -p "${warn} Edit your /etc/fstab and set the mount point /var/cluster to /dev/drbd1. Want to edit right now? (y/n) " -n 1 ANS
 if [ "y" == $ANS ]; then
