@@ -1,0 +1,35 @@
+{# ldap.twig #}
+{% extends 'layout.twig' %}
+{% block title %}Annuaire{% endblock %}
+{% block content %}
+    <h1>Annuaire</h1>
+    <table class="zebra-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>DN</th>
+                <th>CN</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for value in entries %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ value.dn }}</td>
+                <td>{{ value.cn|join(', ') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <h3>Ajouter une personne</h3>
+    <form method="post" action="/ldap.html" class="form-stacked">
+        <div class="clearfix">
+            <label for="name">CN</label>
+            <div class="input">
+                <input class="xxlarge" name="name" id="name" size="16" type="text" value="{{ post.name }}" />
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <input type="submit" class="btn small" value="Ajouter" />
+    </form>
+{% endblock %}

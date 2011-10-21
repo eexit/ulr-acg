@@ -1,0 +1,28 @@
+{# index.twig #}
+{% extends 'layout.twig' %}
+{% block title %}Accueil{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="span8 columns">
+            <h1>Bienvenue sur le site de G1B5 !</h1>
+            <blockquote>
+                <p>The Domain Name Server (DNS) is the Achilles heel of the Web. The important thing is that it's managed responsibly.</p>
+                <small>Tim Berners-Lee</small>
+            </blockquote>
+            <p>
+                <strong>Bienvenue sur notre petit site de projet Master 2 ICONE ACG.</strong>
+                <br>Ca se voit peut-être pas comme ça à première vue mais cette page sera jamais down,
+                si si, je vous mets au défi de faire tomber notre serveur Apache plus de 2 min !
+            </p>
+            <p>Vous êtes {{ remote_ip }} connecté sur {{ local_ip }}.</p>
+        </div>
+        <div class="span8 columns">
+            <ul class="media-grid">
+              <li>
+                  <a href="/" title="On aime le réseau">
+                  <img class="thumbnail" src="/eth.jpg" alt=""></a>
+              </li>
+            </ul>
+        </div>
+    </div>
+{% endblock %}
