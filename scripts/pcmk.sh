@@ -56,11 +56,11 @@ echo
 /etc/init.d/corosync start
 echo
 /etc/init.d/pacemaker start
+cibadmin -E --force
 echo
 echo "Configuring pacemaker services..."
 echo
 crm configure load replace $PCMK_CONF
-crm configure commit
 echo
 echo "[   ${bldblu}DONE${txtrst}   ]"
 echo
