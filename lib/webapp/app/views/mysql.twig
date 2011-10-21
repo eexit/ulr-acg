@@ -1,0 +1,49 @@
+{# ldap.twig #}
+{% extends 'layout.twig' %}
+{% block title %}Serveur de données{% endblock %}
+{% block content %}
+    <h1>Serveur de données</h1>
+    <table class="zebra-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nom</th>
+                <th>Prix</th>
+                <th>Quantité</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for value in entries %}
+            <tr>
+                <td>{{ value.id }}</td>
+                <td>{{ value.name }}</td>
+                <td>{{ value.price }}</td>
+                <td>{{ value.quantity }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <h3>Ajouter une personne</h3>
+    <form method="post" action="/mysql.html" class="form-stacked">
+        <div class="clearfix">
+            <label for="name">Nom</label>
+            <div class="input">
+                <input class="xxlarge" name="name" id="name" size="16" type="text" value="" />
+            </div>
+        </div>
+        <div class="clearfix">
+            <label for="price">Prix</label>
+            <div class="input">
+                <input class="xxlarge" name="price" id="price" size="16" type="text" value="" />
+            </div>
+        </div>
+        <div class="clearfix">
+            <label for="qte">Quantité</label>
+            <div class="input">
+                <input class="xxlarge" name="qte" id="qte" size="16" type="text" value="" />
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <input type="submit" class="btn small" value="Ajouter" />
+    </form>
+{% endblock %}
