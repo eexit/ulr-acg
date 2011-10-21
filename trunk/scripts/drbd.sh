@@ -58,6 +58,8 @@ echo "Building drbd resource..."
 echo
 drbdadm --force create-md ulr-data
 modprobe drbd
+drbdadm down ulr-data
+drbdadm detach ulr-data
 drbdadm up ulr-data
 echo "[   ${bldblu}OK${txtrst}   ]"
 echo
