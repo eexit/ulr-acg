@@ -178,9 +178,60 @@
             \subsection{MySQL}
             \subsection{DNS}
             \subsection{LDAP}
-        \section{Mise en place du pacemaker}
+        \section{Mise en place de Pacemaker et Corosync}
             
-            Dans une architecture HA, le système doit pouvoir constamment suivre son état et celui de son entourage afin de décider si il doit basculer (=''failover'') ou non vers un noeud de secours. 
+            Dans une architecture HA, le système doit pouvoir constamment suivre son état et celui de son entourage afin de décider si il doit basculer (= ''failover'') ou non vers un noeud de secours. Pour cela, avec Fedora, nous avons choisi d'utiliser le service \underline{\href{http://clusterlabs.org}{Pacemaker}} couplé à \underline{\href{http://www.corosync.org}{Corosync}} car ils nous ont semblé très complets et très professionnels.
+            
+            \subsection{Présentation}
+                
+                Pour notre projet, nous avons choisi de mettre en place une architechure en grappes avec un système actif/passif. Ci-dessous un schéma de l'architechure :\\
+                
+                \includegraphics[keepaspectratio=true, width=\textwidth]{content/pacemaker-active-passive.png}\\[1cm]
+                
+                Les << node >> correspondent à nos machines (JB et LLM), la couche de messagerie OpenAIS correspondra au service Corosync qui est un projet dérivé d'OpenAIS. Pour les couches supérieures à Pacemaker, nous les avons vu précédemment.\\
+                
+                Corosync est un moteur de clustering mettant en oeuvre une messagerie de service sur réseau en utilisant une adresse et un port multicast.
+            
+            \subsection{Installation}
+            
+                \begin{bashcode}
+                    # Installation de pacemaker et de corosync
+                    yum install -y pacemaker corosync
+                \end{bashcode}
+            
+            \subsection{Configuration}
+            
+                Avant toute chose, voici les adresses IP nécessaires :\\
+                
+                \begin{description}
+                    \item[Adresse IP multicast] 239.0.0.1
+                    \item[Port multicast] 6800
+                    \item[Réseau de la grappe] 10.192.10.0
+                    \item[Adresse IP de la grappe] 10.192.10.50
+                \end{description}
+                
+                On va commencer par la configuration de Corosync qui est simpliste. Pour cela, on prends le fichier de configuration par défaut et on va simplement y changer les adresses IP comme ceci :\\
+                
+                \begin{bashcode}
+                    \$CONF="/etc/corosync/corosync.conf"
+                    cp -f \$CONF.example \$CONF
+                    sed -i.bak "s/.*mcastaddr:.*/mcastaddr:\ 239.0.0.1/g" \$CONF
+                    sed -i.bak "s/.*mcastport:.*/mcastport:\ 6800/g" \$CONF
+                    sed -i.bak "s/.*bindnetaddr:.*/bindnetaddr:\ 10.192.10.0/g" \$CONF
+                \end{bashcode}
+                
+                Ensuite, on va dire à Corosync de charger le plugin Pacemaker afin qu'il puisse ''travailler'' avec :\\
+                
+                \begin{bashcode}
+                    cat << EOT > /etc/corosync/service.d/pcmk
+                    service {
+                            # Load the Pacemaker Cluster Resource Manager
+                            name: pacemaker
+                            ver:  1
+                    }
+                    EOT
+                \end{bashcode}
+                
             
     \part{Tests}
         \section{Serveur de noms}
@@ -188,7 +239,31 @@
         \section{Serveur MySQL}
         \section{Serveur LDAP}
     \part{Conclusion}
-        \section{Problèmes rencontrés}
+        \section{Difficultés rencontrés}
+            
+            Durant ce projet, la contrainte majeur était de réaliser une telle architechure en 3 jours seulement sans avoir aucune expérience dans le domaine. Nous avons souhaité nous orienter vers des choix fonctionnels et matures plutôt qu'universitaires et peu professionnels.\\
+            
+            Le premier facteur de difficulté aura été l'abscence d'indications concernant le choix des technologies car nous avons réellement été soumis à un environnement pragmatique où nous jouons le rôle des responsables SI vers qui on vient se conseiller suite une problématique bien présente.
+            Le choix et la décision des technologies est une chose mais ce qui est le plus chronophage est de regarder les produits et les solutions existantes sur le marché.\\
+            
+            Une fois les choix réalisés, il a fallu se documenter pour savoir implémenter au mieux possible l'infrastructure logicielle. Nous ne vous cacherons pas que nous avons lu 90\% de documentation en anglais durant ces 3 jours. De l'anglais pas toujours facile à comprendre de part ses termes techniques mais surtout de part la notion nouvelle que nous découvrions sur le tas.\\
+            
+            La difficulté suivante fut liée aux machines elles-même : impossible de prévoir que tout va fonctionner du premier coup, le fait que les machines aient besoin d'un serveur mandataire pour accèder au Web rajoute quelques contraintes sur les configurations mais surtout le manque de maîtrise complet sur les distributions Fedora nous aura fait perdre un peu de temps non négligeable.\\
+            
+            Malgré tout cela, nous sommes parvenus automatiser de manière relativement complète l'installation, la configuration et le déploiement de notre projet à l'aide de Subversion et de scripts Bash.
+        
         \section{Retours sur échec}
+        
+            Après 3 jours de recherche, de développement et de tests acharnés sur les différentes briques de notre architechure, nous avons échoué lors de la présentation de notre projet. En voici les raisons :\\
+            
+            \begin{enumerate}
+                \item Manque d'expérience avec les technologies utilisée
+                \item Manque d'organisation et de rigueur dans les procédures
+                \item Manque de temps (implique du stress)
+                \item Analyses sur tests défaillants pas assez complètes
+            \end{enumerate}
+            
+            D'une certaine manière, tous ces facteurs sont liés car ils s'entre-croisent et s'encouragent.
+        
         \section{Retours personnels}
 \end{document}
