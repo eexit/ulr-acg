@@ -7,3 +7,26 @@ dc: g1b5
 dn: cn=Manager,dc=g1b5,dc=tp,dc=org
 objectclass: organizationalRole
 cn: Manager
+
+dn: ou=employee,dc=g1b5,dc=tp,dc=org
+ou: employee
+objectClass: organizationalUnit
+description: Employees of G1B5 Co LTD
+
+dn: cn=Berthelot,ou=employee,dc=g1b5,dc=tp,dc=org
+objectClass: top
+objectClass: person
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+cn: Berthelot
+sn: Berthelot
+givenName: Joris
+
+dn: cn=Le_Moine,ou=employee,dc=g1b5,dc=tp,dc=org
+objectClass: top
+objectClass: person
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+cn: Le_Moine
+sn: Le_Moine
+givenName: Laurent
