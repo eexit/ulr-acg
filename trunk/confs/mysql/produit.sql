@@ -1,8 +1,4 @@
 
-CREATE USER 'tpuser' IDENTIFIED BY 'tpuser';
-
-CREATE DATABASE projet_hd;
-
 USE projet_hd;
 
 CREATE TABLE product 
