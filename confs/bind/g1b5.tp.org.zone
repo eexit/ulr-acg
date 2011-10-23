@@ -10,7 +10,6 @@ $ttl 3600
 @		IN	NS		ns2.g1b5.tp.org.
 ;
 @		IN 	A		10.192.10.50
-;@		IN 	AAAA	fd00:0:ca:4::1
 ;
 ns		IN 	A		10.192.10.24
 ns		IN 	AAAA	fd00:0:c9::501
@@ -19,10 +18,8 @@ ns2		IN 	A		10.192.10.23
 ns2		IN 	AAAA	fd00:0:ca:4::502
 ;
 www		IN 	A		10.192.10.50
-;www	IN 	AAAA	fd00:0:ca:4::1
 ;
 sql		IN 	A		10.192.10.50
-;sql	IN 	AAAA	fd00:0:ca:4::1
 ;
 ldap	IN 	A		10.192.10.50
-;ldap	IN	AAAA	fd00:0:ca:4::1
+

@@ -13,13 +13,5 @@ $TTL 3600
 	IN	NS		ns.g1b5.tp.org.
 	IN	NS		ns2.g1b5.tp.org.
 ; IPv6 PTR entries
-
-; Subnet #1
-$ORIGIN 10.192.10.in-addr.arpa.
-
 501	IN  PTR		ns.g1b5.tp.org.
 502	IN  PTR     ns2.g1b5.tp.org.
-;???	IN  PTR     g1b5.tp.org.
-;???	IN  PTR     sql.g1b5.tp.org.
-;???	IN	PTR		ldap.g1b5.tp.org.
-;???	IN	PTR		www.g1b5.tp.org.
