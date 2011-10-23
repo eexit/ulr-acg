@@ -89,9 +89,9 @@
         
             Etant donné que ce projet fut réalisé en équipe, le code source des différents scripts et fichiers de configuration sont disponible sur Google Code + Subversion. Ainsi, vous pouvez à tout moment récupérer notre travail (ainsi que le code {\LaTeX} du document) comme ceci :\\
             
-            \begin{bashcode}
-                    svn export http://ulr-acg.googlecode.com/svn/trunk/ ulr-acg-src
-            \end{bashcode}
+            \begin{bashcode*}{gobble=16}
+                svn export http://ulr-acg.googlecode.com/svn/trunk/ ulr-acg-src
+            \end{bashcode*}
             
     
     \part{Infrastructure logicielle}
@@ -100,14 +100,14 @@
         
         Nous avons aussi par ailleurs vidé et désactivé les tables de pare-feu afin de laisse toute nos applications travailler sans avoir de gêne dans un premier temps :\\
         
-        \begin{bashcode}
-                    # Flushes iptables
-                    /sbin/chkconfig --del iptables
-                    # Disables firewall service
-                    service iptables stop
-                    # Enables Network Time Protocol to sync time between machines
-                    service ntpd start
-        \end{bashcode}
+        \begin{bashcode*}{gobble=12}
+            # Flushes iptables
+            /sbin/chkconfig --del iptables
+            # Disables firewall service
+            service iptables stop
+            # Enables Network Time Protocol to sync time between machines
+            service ntpd start
+        \end{bashcode*}
         
         \section{Installation des paquets}
             
@@ -172,32 +172,107 @@
         
             \subsection{Apache}
                 
-                Pour installer Apache, il vous faudra très simplement lancer son script d'installation dans le répertoire \verb+scripts/apache.sh+.
-                Ce script va essayer de stopper Apache, vérifier l'intégrité de son fichier de configuration et si il ne concorde pas avec le notre, il va le remplacer. Ensuite, selon si vous êtes le premier noeud de la grappe.
+                \subsection{Installation}
                 
+                    Pour installer Apache, il vous faudra très simplement lancer son script d'installation dans le répertoire \verb+scripts/apache.sh+.
+                    Ce script va essayer de stopper Apache, vérifier l'intégrité de son fichier de configuration et si il ne concorde pas avec le notre, il va le remplacer. Ensuite, selon si vous êtes le premier noeud de la grappe.
+                
+                \subsection{Configuration}
+                    
+                    La configuration d'Apache est très légèrement spécifique dû à notre application Web qui utilise \underline{\href{http://silex.sensiolabs.org}{Silex}} mais sinon rien de bien particulier ormis la configuration de l'URL \verb+/server-status+ qui doit être disponible pour Pacemaker.\\
+                    
+                    Il faudra donc bien décommenter le bout de code suivant à la fin du fichier :\\
+                  
+                    \begin{minted}[
+                        linenos,
+                        bgcolor=lightgray,
+                        tabsize=4,
+                        fontfamily=courier,
+                        fontsize=\small,
+                        xleftmargin=5pt,
+                        xrightmargin=5pt,
+                        gobble=24
+                        ]{apache}
+                        <Location /server-status>
+                            SetHandler server-status
+                            Order deny,allow
+                            Deny from all
+                            # Only from localhost where Pacemaker runs
+                            Allow from 127.0.0.1
+                        </Location>
+                    \end{minted}
+                    
+                    Enfin, spécifier le \verb+DocumentRoot+ à \verb+/var/cluster/www/org/tp/g1b5/web+ et y ajouter les règles de réécritures suivantes afin de faire fonctionner notre application :\\
+                    
+                    \begin{minted}[
+                        linenos,
+                        bgcolor=lightgray,
+                        tabsize=4,
+                        fontfamily=courier,
+                        fontsize=\small,
+                        xleftmargin=5pt,
+                        xrightmargin=5pt,
+                        gobble=24
+                        ]{apache}
+                        <IfModule mod_rewrite.c>
+                            Options -MultiViews
+                            RewriteEngine On
+                            # All requests which are not a file
+                            RewriteCond %{REQUEST_FILENAME} !-f
+                            # Except this request
+                            RewriteCond %{REQUEST_URI} !=/server-status
+                            RewriteRule ^ index.php [L]
+                        </IfModule>
+                    \end{minted}
+                    
             \subsection{MySQL}
     
-		\subsubsection{Installation}
-		    L'installation de MySQL se fait très facilement grâce au script d'installation \verb+scripts/mysql.sh+.\\
-		    Le script arrête le serveur MySQL, charge le fichier de configuration \verb+confs/mysql/my.cnf+ à la place de l'ancien. Il démarre ensuite le service mysqld, puis cr\'ee les utilisateurs et peuple la base si nous sommes sur le premier noeud de la grappe.
+                \subsubsection{Installation}
+                    
+                    L'installation de MySQL se fait très facilement grâce au script d'installation \verb+scripts/mysql.sh+.\\
+                    Le script arrête le serveur MySQL, charge le fichier de configuration \verb+confs/mysql/my.cnf+ à la place de l'ancien. Il démarre ensuite le service mysqld, puis cr\'ee les utilisateurs et peuple la base si nous sommes sur le premier noeud de la grappe.
 
-		\subsubsection{Configuration}
+                \subsubsection{Configuration}
 
-		    Le fichier de configuration de MySQL est court, mais il est important dans notre cas de bien pr\'eciser le chemin du r\'epertoire ou seront stock\'ees les bases, \`a savoir dans notre cluster, dans le r\'epertoire \verb+/var/cluster/mysql+. De m\^eme, il est aussi important de pr\'eciser que l'adresse utilis\'ees par le serveur est celle de l'adresse du HAProxy, 10.192.10.50.
+                    Le fichier de configuration de MySQL est court, mais il est important dans notre cas de bien pr\'eciser le chemin du r\'epertoire ou seront stock\'ees les bases, \`a savoir dans notre cluster, dans le r\'epertoire \verb+/var/cluster/mysql+. De m\^eme, il est aussi important de pr\'eciser que l'adresse utilis\'ees par le serveur est celle de l'adresse du HAProxy : 10.192.10.50.\\
 
-		    FICHIER CONFS/MYSQL/MY.CNF
+                    \inputminted[
+                        linenos,
+                        bgcolor=lightgray,
+                        tabsize=4,
+                        fontfamily=courier,
+                        fontsize=\small,
+                        xleftmargin=5pt,
+                        xrightmargin=5pt
+                    ]{ini}{./../confs/mysql/my.cnf}
 
-		    Nous devons aussi d\'efinir le mot de passe de l'utilisateur "<root">, qui est le m\^eme sur les deux machines. Cela ce fait simplement gr\^ace \`a la commande :
+                    Nous devons aussi d\'efinir le mot de passe de l'utilisateur ''root'', qui est le m\^eme sur les deux machines. Cela ce fait simplement gr\^ace \`a la commande :\\
 
-		    \begin{bashcode}
-			mysqladmin password <mot_de_passe>
-		    \end{bashcode}
+                    \begin{minted}[
+                        bgcolor=lightgray,
+                        tabsize=4,
+                        fontfamily=courier,
+                        fontsize=\small,
+                        xleftmargin=5pt,
+                        xrightmargin=5pt,
+                        gobble=24
+                        ]{mysql}
+                        mysqladmin password <mot_de_passe>
+                    \end{minted}
+                    
+                    Il faut ensuite cr\'eer un utilisateur ``tpuser'', et lui allouer des droits de s\'election sur tout les machines du r\'eseau 10.192.10.0, afin de permettre l'acc\`es \`a la base ``projet\_hd'' depuis une machine distante.\\
+                    
+                    \inputminted[
+                        linenos,
+                        bgcolor=lightgray,
+                        tabsize=4,
+                        fontfamily=courier,
+                        fontsize=\small,
+                        xleftmargin=5pt,
+                        xrightmargin=5pt
+                    ]{sql}{./../confs/mysql/users.sql}
 
-		    Il faut ensuite cr\'eer un utilisateur "<tpuser">, et lui allouer des droits de s\'election sur tout les machines du r\'eseau 10.192.10.0, afin de permettre l'acc\`es \`a la base "<projet_hd"> depuis une machine distante.
-
-		    FICHIER CONFS/MYSQL/USERS.SQL
-
-		    Il faut aussi cr\'eer puis initialiser la table "<product">, qui contient les donn\'ees sur notre stock. Elle contient les champs "<id">, "<name">, "<price"> et "<quantity">.
+                    Il faut aussi cr\'eer puis initialiser la table ``product'', qui contient les donn\'ees sur notre stock. Elle contient les champs ``id'', ``name'', ``price'' et ``quantity''.\\
 
             \subsection{DNS}
             \subsection{LDAP}
@@ -236,10 +311,10 @@
                 On va commencer par la configuration de Corosync qui est simpliste. Pour cela, on prends le fichier de configuration par défaut et on va simplement y changer les adresses IP comme ceci :\\
                 
                 \begin{bashcode}
-                    \$CONF="/etc/corosync/corosync.conf"
-                    cp -f \$CONF.example \$CONF
-                    sed -i.bak "s/.*mcastaddr:.*/mcastaddr:\ 239.0.0.1/g" \$CONF
-                    sed -i.bak "s/.*mcastport:.*/mcastport:\ 6800/g" \$CONF
+                    CONF="/etc/corosync/corosync.conf"
+                    cp -f $CONF.example $CONF
+                    sed -i.bak "s/.*mcastaddr:.*/mcastaddr:\ 239.0.0.1/g" $CONF
+                    sed -i.bak "s/.*mcastport:.*/mcastport:\ 6800/g" $CONF
                     sed -i.bak "s/.*bindnetaddr:.*/bindnetaddr:\ 10.192.10.0/g" \$CONF
                 \end{bashcode}
                 
