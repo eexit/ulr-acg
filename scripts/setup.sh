@@ -26,7 +26,7 @@ echo
 echo "Script developped by Joris Berthelot and Laurent Le Moine Copyright (c) 2011"
 echo
 echo
-echo << EOT
+cat << EOT
 This script is about to configure and deploy a full Web active/passive cluster engine architecture. Please note that this
 project is devised to work on two machines only with respectives IP addresse $UC1v4 and $UC2v4.
 Feel free to change theses IP above...
