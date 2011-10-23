@@ -12,6 +12,7 @@
     hyperref,
     listings,
     lmodern,
+    soul,
     fancyhdr,
     algorithmic,
     minted % How to install: http://blog.eexit.net/2011/02/latex-colorez-efficacement-votre-code-source-avec-minted.html
@@ -172,12 +173,12 @@
         
             \subsection{Apache}
                 
-                \subsection{Installation}
+                \subsubsection{Installation}
                 
                     Pour installer Apache, il vous faudra très simplement lancer son script d'installation dans le répertoire \verb+scripts/apache.sh+.
                     Ce script va essayer de stopper Apache, vérifier l'intégrité de son fichier de configuration et si il ne concorde pas avec le notre, il va le remplacer. Ensuite, selon si vous êtes le premier noeud de la grappe.
                 
-                \subsection{Configuration}
+                \subsubsection{Configuration}
                     
                     La configuration d'Apache est très légèrement spécifique dû à notre application Web qui utilise \underline{\href{http://silex.sensiolabs.org}{Silex}} mais sinon rien de bien particulier ormis la configuration de l'URL \verb+/server-status+ qui doit être disponible pour Pacemaker.\\
                     
@@ -298,39 +299,101 @@
                 \end{bashcode}
             
             \subsection{Configuration}
+                
+                \subsubsection{Corosync}
+                
+                    Avant toute chose, voici les adresses IP nécessaires :\\
+
+                    \begin{description}
+                        \item[Adresse IP multicast] 239.0.0.1
+                        \item[Port multicast] 6800
+                        \item[Réseau de la grappe] 10.192.10.0
+                        \item[Adresse IP de la grappe] 10.192.10.50
+                    \end{description}
+
+                    On va commencer par la configuration de Corosync qui est simpliste. Pour cela, on prends le fichier de configuration par défaut et on va simplement y changer les adresses IP comme ceci :\\
+
+                    \begin{bashcode*}{gobble=24}
+                        CONF="/etc/corosync/corosync.conf"
+                        cp -f $CONF.example $CONF
+                        sed -i.bak "s/.*mcastaddr:.*/mcastaddr:\ 239.0.0.1/g" $CONF
+                        sed -i.bak "s/.*mcastport:.*/mcastport:\ 6800/g" $CONF
+                        sed -i.bak "s/.*bindnetaddr:.*/bindnetaddr:\ 10.192.10.0/g" \$CONF
+                    \end{bashcode*}
+
+                    Ensuite, on va signaler à Corosync de charger le plugin Pacemaker afin qu'il puisse ''travailler'' avec :\\
+
+                    \begin{bashcode*}{gobble=24}
+                        cat << EOT > /etc/corosync/service.d/pcmk
+                        service {
+                                # Load the Pacemaker Cluster Resource Manager
+                                name: pacemaker
+                                ver:  1
+                        }
+                        EOT
+                    \end{bashcode*}
+
+                    Une fois configuré, nous pouvons lancer Corosync :\\
+
+                    \begin{bashcode*}{linenos=false, gobble=24}
+                        /etc/init.d/corosync start
+                    \end{bashcode*}
+                
+                \subsubsection{Pacemaker}
+                
+                    Pacemaker offre une invite de commande propre à lui-même (comme les switch Cisco) que nous pouvons lancer en tapant \verb+crm+. Il est intéressant de savoir qu'en interne, la configuration de Pacemaker est formattée en XML car suite à quelques erreurs de notre part, nous avons pu constater des erreurs de validation d'entrée contre des Schémas XML.\\
+                    
+                    Afin de vous épargner la configuration à la main de Pacemaker, nous pouvons exporter et injecter directement une configuration donnée :\\
+                    
+                    \begin{bashcode*}{linenos=false, gobble=24}
+                        crm configure load replace /path/to/conf/file
+                    \end{bashcode*}
+                    
+                    Mais avant cela, vous devez démarrer Pacemaker et vider sa configuration actuelle (si existante) :\\
+                    
+                    \begin{bashcode*}{linenos=false, gobble=24}
+                        /etc/init.d/pacemaker start
+                        cibsadmin -E --force
+                    \end{bashcode*}
+                    
+                    Voici donc notre fichier de configuration pour Pacemaker (la version initiale qui marchait correctement) :\\
+                    
+                    \inputminted[
+                        linenos,
+                        bgcolor=lightgray,
+                        tabsize=4,
+                        fontfamily=courier,
+                        fontsize=\small,
+                        xleftmargin=5pt,
+                        xrightmargin=5pt
+                    ]{text}{./../confs/pcmk/conf.work}
+                    
+                    Dans ce fichier, on peut y entrevoir des déclarations de ressources comme une IP ``flottante'' (\verb+10.192.10.50+) sur laquelle le monde extérieur va se connecter au services que contient la grappe, des ressources de battement de coeurs pour un système de fichier, les serveurs Apache, MySQL, LDAP et enfin la ressource de réplication bas niveau DRBD.\\
+                    
+                    Mais ce n'est que la déclaration des ressources, ensuite viennnent les dépendances de ``colocation'' qui obligent deux ressources données à toujours être de paire et enfin les ordres de démarrage des ressources en fonction des dépendances.
+                    Par exemple, Apache ne peut pas démarrer avant que le système de fichier soit opérationnel.
             
-                Avant toute chose, voici les adresses IP nécessaires :\\
+                \subsection{Utilisation}
                 
-                \begin{description}
-                    \item[Adresse IP multicast] 239.0.0.1
-                    \item[Port multicast] 6800
-                    \item[Réseau de la grappe] 10.192.10.0
-                    \item[Adresse IP de la grappe] 10.192.10.50
-                \end{description}
+                    Pour \st{admirer} surveiller le bon fonctionnement de Pacemaker, il y a la commande \verb+crm_mon+.\\
                 
-                On va commencer par la configuration de Corosync qui est simpliste. Pour cela, on prends le fichier de configuration par défaut et on va simplement y changer les adresses IP comme ceci :\\
+                    En ce qui concerne la gestion des noeuds ou des ressources, il faut utiliser la commande \verb+crm+. Voici quelques exemples :\\
                 
-                \begin{bashcode}
-                    CONF="/etc/corosync/corosync.conf"
-                    cp -f $CONF.example $CONF
-                    sed -i.bak "s/.*mcastaddr:.*/mcastaddr:\ 239.0.0.1/g" $CONF
-                    sed -i.bak "s/.*mcastport:.*/mcastport:\ 6800/g" $CONF
-                    sed -i.bak "s/.*bindnetaddr:.*/bindnetaddr:\ 10.192.10.0/g" \$CONF
-                \end{bashcode}
-                
-                Ensuite, on va dire à Corosync de charger le plugin Pacemaker afin qu'il puisse ''travailler'' avec :\\
-                
-                \begin{bashcode}
-                    cat << EOT > /etc/corosync/service.d/pcmk
-                    service {
-                            # Load the Pacemaker Cluster Resource Manager
-                            name: pacemaker
-                            ver:  1
-                    }
-                    EOT
-                \end{bashcode}
-                
-            
+                    \begin{bashcode*}{gobble=24}
+                        # Vérifier le status d'une ressource
+                        crm resource status Apache
+                        # Redémarrer une resource
+                        crm resource restart MySQL
+                        # Déplacer une ressource sur un autre noeud
+                        crm ressource move FS mamba14
+                        # Voir le status d'un noeud
+                        crm node status mamba13
+                        # Mettre un noeud en standby (simulation du failover)
+                        crm node standby mamb14
+                        # Et le rendre disponible à nouveau
+                        crm node online mamba14
+                    \end{bashcode*}
+
     \part{Tests}
         \section{Serveur de noms}
         \section{Serveur Apache}
@@ -352,20 +415,20 @@
         
         \section{Retours sur échec}
         
-            Après 3 jours de recherche, de développement et de tests acharnés sur les différentes briques de notre architechure, nous avons échoué lors de la présentation de notre projet. En voici les raisons :\\
+            Après 3 jours de recherche, de développement et de tests acharnés sur les différentes briques de notre architechure, nous avons échoué lors de la présentation de notre projet. En voici les raisons majeures :\\
             
             \begin{enumerate}
-                \item Manque d'expérience avec les technologies utilisée
+                \item Manque d'expérience avec les technologies utilisées
                 \item Manque d'organisation et de rigueur dans les procédures
                 \item Manque de temps (implique du stress)
                 \item Analyses sur tests défaillants pas assez complètes
             \end{enumerate}
             
-            D'une certaine manière, tous ces facteurs sont liés car ils s'entre-croisent et s'encouragent.\\
+            D'une certaine manière, tous ces facteurs sont liés car ils s'entre-croisent et s'encouragent et nous le savions mais pas c'est pas toujours évident d'avoir le temps de prendre le recul nécessaire afin de mieux repartir.\\
             
-            Après des heures acharnées de travail, nous avions réussi à faire tourner notre architechure active/passive en simulant des failovers et des failback avec succès mais sans tester tous les cas possibles et surtout les cas d'évaluation. Ensuite, nous avons voulu optimiser la configuration de Pacemaker afin de la simplifier mais nous nous sommes rendu compte après analyse que cette configuration ne répondait plus au contraintes d'ordre de basculement des service d'un noeud à l'autre.
+            Après des heures intensives de travail, nous avions réussi à faire tourner notre architechure active/passive en simulant des failovers et des failback avec succès mais sans tester tous les cas possibles et surtout les cas d'évaluation. Suite à ce succès précipité, nous avons voulu optimiser la configuration de Pacemaker afin de la simplifier mais nous nous sommes rendu compte après analyse que cette nouvelle configuration ne répondait plus au contraintes d'ordre de basculement des services lors du failover.
             
-            Dans le stress et la précipitation, nous avons voulu essayer une architechure active/active car nous pensions que le type d'architechure active/passive ne répondait pas à la demande de l'évaluation. Après quelques heures d'installation et de configuration, cette nouvelle monture n'a pas été un succès à cause d'un soucis de synchronisation de volume avec DRBD.
+            Dans le stress et la précipitation, nous avons voulu essayer une architechure active/active car nous pensions que le type d'architechure active/passive ne répondait pas à la demande de l'évaluation (analyse d'échec pas assez poussée) mais près quelques heures d'installation et de configuration, cette nouvelle monture n'a pas été un succès à cause d'un soucis de synchronisation de volume avec DRBD bien que la nouvelle configuration active/active de Pacemaker était déjà prète.
         
         \section{Retours personnels}
 \end{document}
