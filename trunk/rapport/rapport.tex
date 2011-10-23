@@ -263,7 +263,11 @@
                 \item Analyses sur tests défaillants pas assez complètes
             \end{enumerate}
             
-            D'une certaine manière, tous ces facteurs sont liés car ils s'entre-croisent et s'encouragent.
+            D'une certaine manière, tous ces facteurs sont liés car ils s'entre-croisent et s'encouragent.\\
+            
+            Après des heures acharnées de travail, nous avions réussi à faire tourner notre architechure active/passive en simulant des failovers et des failback avec succès mais sans tester tous les cas possibles et surtout les cas d'évaluation. Ensuite, nous avons voulu optimiser la configuration de Pacemaker afin de la simplifier mais nous nous sommes rendu compte après analyse que cette configuration ne répondait plus au contraintes d'ordre de basculement des service d'un noeud à l'autre.
+            
+            Dans le stress et la précipitation, nous avons voulu essayer une architechure active/active car nous pensions que le type d'architechure active/passive ne répondait pas à la demande de l'évaluation. Après quelques heures d'installation et de configuration, cette nouvelle monture n'a pas été un succès à cause d'un soucis de synchronisation de volume avec DRBD.
         
         \section{Retours personnels}
 \end{document}
