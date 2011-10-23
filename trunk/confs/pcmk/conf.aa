@@ -1,34 +1,24 @@
 primitive MySQL lsb:mysqld
 primitive LDAP lsb:slapd
-
 primitive ClusterIP ocf:heartbeat:IPaddr2 params ip="10.192.10.50" cidr_netmask="24" clusterip_hash="sourceip" op monitor interval="5s"
-
 primitive ClusterFS ocf:heartbeat:Filesystem params device="/dev/drbd/by-res/ulr-data" directory="/var/cluster" fstype="gfs2"
-
 primitive Volume ocf:linbit:drbd params drbd_resource="ulr-data" op monitor interval="30s"
-
 primitive Apache ocf:heartbeat:apache params configfile="/etc/httpd/conf/httpd.conf" op monitor interval="10s"
-
 ms VolumeClone Volume meta master-max="1" master-node-max="1" clone-max="2" clone-node-max="1" notify="true"
-
 group Services ClusterFSClone ClusterIPClone ApacheClone MySQL LDAP
-
 colocation Services-on-VolumeClone inf: Services VolumeClone:Master
-
 order Services-after-VolumeClone inf: VolumeClone Services:start
-
 clone ClusterIPClone ClusterIP meta globally-unique="true" clone-max="2" clone-node-max="2"
 clone ApacheClone Apache
 clone ClusterFSClone ClusterFS
-
 property $id="cib-bootstrap-options" \
-	dc-version="1.1.6-1.fc14-b379478e0a66af52708f56d0302f50b6f13322bd" \
-	cluster-infrastructure="openais" \
-	expected-quorum-votes="2" \
-	stonith-enabled="false" \
-	cluster-recheck-interval=5m \
-	no-quorum-policy="ignore"
+    dc-version="1.1.6-1.fc14-b379478e0a66af52708f56d0302f50b6f13322bd" \
+    cluster-infrastructure="openais" \
+    expected-quorum-votes="2" \
+    stonith-enabled="false" \
+    cluster-recheck-interval=5m \
+    no-quorum-policy="ignore"
 rsc_defaults $id="rsc-options" \
-	resource-stickiness="100" \
-	migration-threshold=2 \
-	failure-timeout=30s
+    resource-stickiness="100" \
+    migration-threshold=2 \
+    failure-timeout=30s

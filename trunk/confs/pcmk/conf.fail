@@ -9,13 +9,13 @@ group Services ClusterFS ClusterIP Apache MySQL LDAP
 colocation Services-on-VolumeClone inf: Services VolumeClone:Master
 order Services-after-VolumeClone inf: VolumeClone Services:start
 property $id="cib-bootstrap-options" \
-	dc-version="1.1.6-1.fc14-b379478e0a66af52708f56d0302f50b6f13322bd" \
-	cluster-infrastructure="openais" \
-	expected-quorum-votes="2" \
-	stonith-enabled="false" \
-	cluster-recheck-interval=5m \
-	no-quorum-policy="ignore"
+    dc-version="1.1.6-1.fc14-b379478e0a66af52708f56d0302f50b6f13322bd" \
+    cluster-infrastructure="openais" \
+    expected-quorum-votes="2" \
+    stonith-enabled="false" \
+    cluster-recheck-interval=5m \
+    no-quorum-policy="ignore"
 rsc_defaults $id="rsc-options" \
-	resource-stickiness="100" \
-	migration-threshold=2 \
-	failure-timeout=30s
+    resource-stickiness="100" \
+    migration-threshold=2 \
+    failure-timeout=30s
