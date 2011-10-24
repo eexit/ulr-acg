@@ -143,7 +143,7 @@
                 
             \subsection{Configuration}
                 
-                Avant de configurer DRBD, il faut choisir où seront stockées nos données et comment s'y prendre. Dans une configuration idéale, il aurait fallu stocker nos données sur des partitions logique cryptées et répliquées avec en RAID 15 mais nous n'avons pas eu le temps de nous soucier de cela donc nous avons vu simple : une partition logique dans une groupe de volumes.\\
+                Avant de configurer DRBD, il faut choisir où seront stockées nos données et comment s'y prendre. Dans une configuration idéale, il aurait fallu stocker nos données sur des partitions logique cryptées et répliquées avec en RAID 15 mais nous n'avons pas eu le temps de nous soucier de cela donc nous avons vu simple : une partition logique dans un groupe de volumes.\\
                 
                 Pour se faire, nous avons utilisé le disque \verb+/dev/sdb+ vide par défaut et nous y avons crée une partitions de type Linux LVM :\\
                 
@@ -167,7 +167,7 @@
                     lvcreate -n ulr-data -L1G ulr-acg
                 \end{bashcode}
                 
-                Maintenant que notre volume de données est prêts, nous décidont qu'il sera monté dans \verb+/var/cluster+ et toute les données applicatives seront dedans.
+                Maintenant que notre volume de données est prêt, nous décidons qu'il sera monté dans \verb+/var/cluster+ et que toutes les données applicatives seront dedans.
                 
                 La configuration de DRBD peu s'avérer très simple mais permet un certain degré de complexité en fonction des architectures. La syntaxe est claire et s'apparente à celle du serveur de nom.\\
                 Voici la configuration que nous avons utilisé :\\
@@ -182,7 +182,7 @@
                     xrightmargin=5pt
                 ]{text}{./../confs/drbd/drbd.conf}
                 
-                DRBD implique qu'un lien réseau doit être établi en supplément des liens existants. Il est important de comprendre que le DRBD utilise un réseau à lui propre afin d'y transférer les données.\\
+                DRBD implique qu'un lien réseau doit être établi en supplément des liens existants. Il est important de comprendre que le DRBD utilise un réseau qui lui est propre afin d'y transférer les données.\\
                 
                 Une fois configuré, nous pouvons lancer Corosync :\\
                 
@@ -347,7 +347,7 @@
                 Nous avons choisi une configuration ma\^itre/esclave classique plutôt que d'utiliser DRBD et PaceMaker, car il n'y a pas de donn\'ees \`a r\'epliqu\'e comme avec l'annuaire LDAP ou MySQL, il y a seulement les fichiers de zones.\\
                 De m\^eme, pour les adresses des serveurs DNS, nous avons utilis\'e l'adresse des machines plut\^ot que celle du proxy. Le ma\^itre est donc la machine LLM, ayant l'adresse 10.192.10.24, et l'esclave la machine JB, 10.192.10.23.\\
                 
-                Le fichier de configuration de bind est simple, et nous avons seulement rajout\'e la partie concernant les fichiers de zones. Dans les fichiers de zones, l'adresse des serveurs DNS est celle des machines correspondantes, mais l'adresse de ``g1b5.tp.org'' et celle des diff\'erents service est celle du proxy, 10.192.10.50. \\
+                Le fichier de configuration de bind est simple, et nous avons seulement rajout\'e la partie concernant les fichiers de zones. Dans les fichiers de zones, l'adresse des serveurs DNS est celle des machines correspondantes, mais l'adresse de ``g1b5.tp.org'' et celle des diff\'erents services est celle du proxy, 10.192.10.50. \\
                 
                 Nous n'avons pas pu donner d'adresses IPv6 aux diff\'erents services car Corosync et PaceMaker ne permettent pas de d\'efinir plusieurs adresses (ou du moins nous n'avons pas trouv\'e) pour le proxy, les services ont donc seulement une adresse IPv4, seul les serveurs DNS ont une adresse IPv6.\\
                 
@@ -531,7 +531,7 @@
     \part{Conclusion}
         \section{Difficultés rencontrés}
             
-            Durant ce projet, la contrainte majeur était de réaliser une telle architechure en 3 jours seulement sans avoir aucune expérience dans le domaine. Nous avons souhaité nous orienter vers des choix fonctionnels et matures plutôt qu'universitaires et peu professionnels.\\
+            Durant ce projet, la contrainte majeure était de réaliser une telle architechure en 3 jours seulement sans avoir aucune expérience dans le domaine. Nous avons souhaité nous orienter vers des choix fonctionnels et matures plutôt qu'universitaires et peu professionnels.\\
             
             Le premier facteur de difficulté aura été l'abscence d'indications concernant le choix des technologies car nous avons réellement été soumis à un environnement pragmatique où nous jouons le rôle des responsables SI vers qui on vient se conseiller suite une problématique bien présente.
             Le choix et la décision des technologies est une chose mais ce qui est le plus chronophage est de regarder les produits et les solutions existantes sur le marché.\\
