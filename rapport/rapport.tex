@@ -1,11 +1,15 @@
-
-% ========================
-% = Rapport de projet HA =
-% ========================
+% ====================================
+% = Dossier d'Architecture Technique =
+% ====================================
 % Joris Berthelot <joris.berthelot@gmail.com>
 % Laurent Le Moine <laurent.le.moine17@gmail.com>
 % 
-
+% Filename: rapport.tex
+% Date: Lun, 24 oct 2011 04:00:24 CEST
+% Tab size: 4
+% Soft tabs: YES
+% Column limit: 80
+% Word count: 4033
 
 \documentclass[11pt,a4paper]{report}
 \usepackage{
@@ -18,7 +22,7 @@
     algorithmic,
     minted % How to install: http://blog.eexit.net/2011/02/latex-colorez-efficacement-votre-code-source-avec-minted.html
 }
-%\usepackage[utf8]{inputenc}
+\usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[french]{babel}
 \usepackage[pdftex]{graphicx}
@@ -75,13 +79,13 @@
         
         \addcontentsline{toc}{section}{Introduction}
         
-        Dans le cadre de notre formation Master Ingéniérie Informatique et de son Unité d'Enseignement Architecture: Conception et Gestion, nous avons réalisé un projet d'architecture réseau HA (High Availability) en 3 jours seulement.\\
+        Dans le cadre de notre formation Master Ing\'eni\'erie Informatique et de son Unit\'e d'Enseignement Architecture: Conception et Gestion, nous avons r\'ealis\'e un projet d'architecture r\'eseau HA (High Availability) en 3 jours seulement.\\
         
-        Ce projet nous a permis de mettre en exergue nos connaissances récemment acquises lors des cours respectifs de la même UE mais aussi de reprendre et appliquer les concepts vus en TP la semaine auparavant.
+        Ce projet nous a permis de mettre en exergue nos connaissances r\'ecemment acquises lors des cours respectifs de la m\^eme UE mais aussi de reprendre et appliquer les concepts vus en TP la semaine auparavant.
         
         \addcontentsline{toc}{section}{Postes de travail}
         
-            Assigné comme table \no5, nous avons utilisé les postes suivants :\\
+            Assign\'e comme table \no5, nous avons utilis\'e les postes suivants :\\
         
             \begin{description}
                 \item[Joris Berthelot (sera la machine << JB >> dans le reste du rapport)] \hfill \\
@@ -98,7 +102,7 @@
             
         \addcontentsline{toc}{section}{Code source}
             
-            Etant donné que ce projet fut réalisé en équipe, le code source des différents scripts et fichiers de configuration sont disponible sur Google Code + Subversion. Ainsi, vous pouvez à tout moment récupérer notre travail (ainsi que le code {\LaTeX} du document) comme ceci :\\
+            Etant donn\'e que ce projet fut r\'ealis\'e en \'equipe, le code source des diff\'erents scripts et fichiers de configuration sont disponible sur Google Code + Subversion. Ainsi, vous pouvez \`a tout moment r\'ecup\'erer notre travail (ainsi que le code {\LaTeX} du document) comme ceci :\\
             
             \begin{bashcode*}{gobble=16}
                 svn export http://ulr-acg.googlecode.com/svn/trunk/ ulr-acg-src
@@ -106,46 +110,46 @@
             
     \part{Infrastructure logicielle}
         
-        Avant toute choses, vous devez savoir que l'ensemble des opérations décrites dans cette section sont a réaliser avec l'utilisateur root. Si vous lancez les scripts livrés avec le rapport sans être root, vous aurez droit à un gentil message d'erreur.\\
+        Avant toute choses, vous devez savoir que l'ensemble des op\'erations d\'ecrites dans cette section sont a r\'ealiser avec l'utilisateur root. Si vous lancez les scripts livr\'es avec le rapport sans \^etre root, vous aurez droit \`a un gentil message d'erreur.\\
         
-        Nous avons aussi par ailleurs vidé et désactivé les tables de pare-feu afin de laisse toute nos applications travailler sans avoir de gêne dans un premier temps :\\
+        Nous avons aussi par ailleurs vid\'e et d\'esactiv\'e les tables de pare-feu afin de laisse toute nos applications travailler sans avoir de g\^ene dans un premier temps :\\
         
         \begin{bashcode*}{gobble=12}
-            # Flushes iptables
+            # Vide les iptables
             /sbin/chkconfig --del iptables
-            # Disables firewall service
+            # Desactive le firewall
             service iptables stop
-            # Enables Network Time Protocol to sync time between machines
+            # Active la synchronisation du temps sur le reseau
             service ntpd start
         \end{bashcode*}
         
         \section{Installation des paquets}
             
-            Avant de commencer à configurer et déployer les services, nous aurons besoin d'installer un certain nombre de paquets afin de pouvoir parvenir à nos fins. Aussi divers que variés, nous avons scripté cette installation afin de faciliter la tâche.\\
+            Avant de commencer \`a configurer et d\'eployer les services, nous aurons besoin d'installer un certain nombre de paquets afin de pouvoir parvenir \`a nos fins. Aussi divers que vari\'es, nous avons script\'e cette installation afin de faciliter la t\^ache.\\
             
             \subsection{Configuration du proxy}
-            
-                Il faudra auparavant configurer manuellement les paramètres du proxy si besoin afin de ne pas rendre le script d'installation inopérationnel.
-                Pour se faire, veillez à bien changer les paramètres dans les Serveur mandataires (Système > Configuration > Serveurs mandataires) ainsi que rajouter les bons paramètres à Yum (proxy) :\\
+                
+                Il faudra auparavant configurer manuellement les param\`etres du proxy si besoin afin de ne pas rendre le script d'installation inop\'erationnel.
+                Pour se faire, veillez \`a bien changer les param\`etres dans les Serveur mandataires (Syst\`eme > Configuration > Serveurs mandataires) ainsi que rajouter les bons param\`etres \`a Yum (proxy) :\\
                 
                 \begin{bashcode}
                     # Configuration de Yum
                     vim /etc/yum.conf
                 \end{bashcode}
-        
-        \section{Réplication bas niveau}
+                
+        \section{R\'eplication bas niveau}
             
-            La réplication bas niveau permet de créer non pas une redondance applicative mais directement sur le support des données applicatives (système de fichier). L'intêret à cela est d'éviter de configurer chaque service pour sa propre réplication (si existant) et d'aller droit au but en répliquant directement le volume sur lequel repose les données.\\
+            La r\'eplication bas niveau permet de cr\'eer non pas une redondance applicative mais directement sur le support des donn\'ees applicatives (syst\`eme de fichier). L'int\^eret \`a cela est d'\'eviter de configurer chaque service pour sa propre r\'eplication (si existant) et d'aller droit au but en r\'epliquant directement le volume sur lequel repose les donn\'ees.\\
             
-            Voici un petit schéma (issu du site de DRBD) afin d'imager le concept : \\
+            Voici un petit sch\'ema (issu du site de DRBD) afin d'imager le concept : \\
             
             \includegraphics[keepaspectratio=true, width=\textwidth]{content/drbd.png}\\[1cm]
             
             \subsection{Installation}
                 
-                Pour la réplication bas niveau (système de fichiers), nous avons utilisé \underline{\href{http://www.drbd.org/}{DRBD}} : un logiciel permettant de faire de la réplication de données au sein d'une architecture en grappe. DRBD est assez complexe et fastidieux à mettre en place car il demande quelques notions assez poussées sur les volumes, leur synchronisations, etc.\\
+                Pour la r\'eplication bas niveau (syst\`eme de fichiers), nous avons utilis\'e \underline{\href{http://www.drbd.org/}{DRBD}} : un logiciel permettant de faire de la r\'eplication de donn\'ees au sein d'une architecture en grappe. DRBD est assez complexe et fastidieux \`a mettre en place car il demande quelques notions assez pouss\'ees sur les volumes, leur synchronisations, etc.\\
                 
-                Ce logiciel ne fonctionnait autrefois qu'en mode maître/esclave mais depuis les dernières versions, on peut partir sur une configuration maître/maître afin que les données soient bien synchronisées de manière bidirectionnelle.\\
+                Ce logiciel ne fonctionnait autrefois qu'en mode ma\^itre/esclave mais depuis les derni\`eres versions, on peut partir sur une configuration ma\^itre/ma\^itre afin que les donn\'ees soient bien synchronis\'ees de mani\`ere bidirectionnelle.\\
                 
                 \begin{bashcode}
                     # Installation de drbd
@@ -154,9 +158,9 @@
                 
             \subsection{Configuration}
                 
-                Avant de configurer DRBD, il faut choisir où seront stockées nos données et comment s'y prendre. Dans une configuration idéale, il aurait fallu stocker nos données sur des partitions logique cryptées et répliquées avec en RAID 15 mais nous n'avons pas eu le temps de nous soucier de cela donc nous avons vu simple : une partition logique dans un groupe de volumes.\\
+                Avant de configurer DRBD, il faut choisir o\`u seront stock\'ees nos donn\'ees et comment s'y prendre. Dans une configuration id\'eale, il aurait fallu stocker nos donn\'ees sur des partitions logique crypt\'ees et r\'epliqu\'ees avec en RAID 15 mais nous n'avons pas eu le temps de nous soucier de cela donc nous avons vu simple : une partition logique dans un groupe de volumes.\\
                 
-                Pour se faire, nous avons utilisé le disque \verb+/dev/sdb+ vide par défaut et nous y avons crée une partitions de type Linux LVM :\\
+                Pour se faire, nous avons utilis\'e le disque \verb+/dev/sdb+ vide par d\'efaut et nous y avons cr\'ee une partitions de type Linux LVM :\\
                 
                 \begin{bashcode}
                     fdisk /dev/sdb
@@ -170,18 +174,18 @@
                     > t
                     > 8E
                     > w
-                    # Création d'un volume physique à partir de /dev/sdb1
+                    # Creation d'un volume physique a partir de /dev/sdb1
                     pvcreate /dev/sdb1
-                    # Création d'un goupe de volumes
+                    # Creation d'un goupe de volumes
                     vgcreate ulr-acg /dev/sdb1
-                    # Création d'un volume dans le groupe de volumes
+                    # Creation d'un volume dans le groupe de volumes
                     lvcreate -n ulr-data -L1G ulr-acg
                 \end{bashcode}
                 
-                Maintenant que notre volume de données est prêt, nous décidons qu'il sera monté dans \verb+/var/cluster+ et que toutes les données applicatives seront dedans.
+                Maintenant que notre volume de donn\'ees est pr\^et, nous d\'ecidons qu'il sera mont\'e dans \verb+/var/cluster+ et que toutes les donn\'ees applicatives seront dedans.
                 
-                La configuration de DRBD peu s'avérer très simple mais permet un certain degré de complexité en fonction des architectures. La syntaxe est claire et s'apparente à celle du serveur de nom.\\
-                Voici la configuration que nous avons utilisé :\\
+                La configuration de DRBD peu s'av\'erer tr\`es simple mais permet un certain degr\'e de complexit\'e en fonction des architectures. La syntaxe est claire et s'apparente \`a celle du serveur de nom.\\
+                Voici la configuration que nous avons utilis\'e :\\
                 
                 \inputminted[
                     linenos=true,
@@ -193,59 +197,59 @@
                     xrightmargin=5pt
                 ]{text}{./../confs/drbd/drbd.conf}
                 
-                DRBD implique qu'un lien réseau doit être établi en supplément des liens existants. Il est important de comprendre que le DRBD utilise un réseau qui lui est propre afin d'y transférer les données.\\
+                DRBD implique qu'un lien r\'eseau doit \^etre \'etabli en suppl\'ement des liens existants. Il est important de comprendre que le DRBD utilise un r\'eseau qui lui est propre afin d'y transf\'erer les donn\'ees.\\
                 
-                Une fois configuré, nous pouvons lancer Corosync :\\
+                Une fois configur\'e, nous pouvons lancer Corosync :\\
                 
                 \begin{bashcode*}{linenos=false}
                     /etc/init.d/drbd start
                 \end{bashcode*}
                 
-                Une fois le service DRBD démarré, nous devons initialiser le disque afin que le système de réplication fonctionne :\\
+                Une fois le service DRBD d\'emarr\'e, nous devons initialiser le disque afin que le syst\`eme de r\'eplication fonctionne :\\
                 
                 \begin{bashcode}
-                    # Création du disque à partir du volume
+                    # Creation du disque a partir du volume
                     drbdadm --force create-md ulr-data
                     # Activation du volume au sein de DRBD
                     drbdadm up ulr-data
-                    # Déclaration de notre disque comme maître
+                    # Declaration de notre disque comme maitre
                     drbdadm -- --overwrite-data-of-peer primary ulr-data
                 \end{bashcode}
                 
-                Pour vérifier que DRBD fonctionne bien, il suffit de voir son état en faisant la commande suivante :\\
+                Pour v\'erifier que DRBD fonctionne bien, il suffit de voir son \'etat en faisant la commande suivante :\\
                 
                 \begin{bashcode*}{linenos=false}
                     cat /proc/drbd
                 \end{bashcode*}
                 
-                Si tout va bien, on peut créer le système de fichier sur le disque maître et le monter dans \verb+/var/cluster+ :\\
+                Si tout va bien, on peut cr\'eer le syst\`eme de fichier sur le disque ma\^itre et le monter dans \verb+/var/cluster+ :\\
                 
                 \begin{bashcode}
-                    # Création d'un système de fichier de type EXT4
+                    # Creation d'un systeme de fichier de type EXT4
                     mkfs.ext4 /dev/drbd1
-                    # Montage du système de fichier
+                    # Montage du systeme de fichier
                     mount /dev/drbd1 /var/cluster
                 \end{bashcode}
                 
-                Voici comment créer un volume logique contenant un système de fichier de type EXT4 réparti sur plusieurs machines avec DRBD.
+                Voici comment cr\'eer un volume logique contenant un syst\`eme de fichier de type EXT4 r\'eparti sur plusieurs machines avec DRBD.
                 
-        \section{Déploiement des services}
+        \section{D\'eploiement des services}
             
-            Dans cette partie, il est important de comprendre que lors de la mise en place d'une architecture en grappe avec des noeuds répliqués, il faut toujours un noeud de référence, surtout dans une architecture active/passive comme celle que nous allons mettre en place.
-            Suivant la machine sur laquelle vous allez lancer les scripts, il faudra ou non déployer les données.
+            Dans cette partie, il est important de comprendre que lors de la mise en place d'une architecture en grappe avec des noeuds r\'epliqu\'es, il faut toujours un noeud de r\'ef\'erence, surtout dans une architecture active/passive comme celle que nous allons mettre en place.
+            Suivant la machine sur laquelle vous allez lancer les scripts, il faudra ou non d\'eployer les donn\'ees.
             
             \subsection{Apache}
                 
                 \subsubsection{Installation}
                     
-                    Pour installer Apache, il vous faudra très simplement lancer son script d'installation dans le répertoire \verb+scripts/apache.sh+.
-                    Ce script va essayer de stopper Apache, vérifier l'intégrité de son fichier de configuration et si il ne concorde pas avec le notre, il va le remplacer. Ensuite, selon si vous êtes le premier noeud de la grappe.
+                    Pour installer Apache, il vous faudra tr\`es simplement lancer son script d'installation dans le r\'epertoire \verb+scripts/apache.sh+.
+                    Ce script va essayer de stopper Apache, v\'erifier l'int\'egrit\'e de son fichier de configuration et si il ne concorde pas avec le notre, il va le remplacer. Ensuite, selon si vous \^etes le premier noeud de la grappe.
                     
                 \subsubsection{Configuration}
                     
-                    La configuration d'Apache est très légèrement spécifique dû à notre application Web qui utilise \underline{\href{http://silex.sensiolabs.org}{Silex}} mais sinon rien de bien particulier ormis la configuration de l'URL \verb+/server-status+ qui doit être disponible pour Pacemaker.\\
+                    La configuration d'Apache est tr\`es l\'eg\`erement sp\'ecifique d\^u \`a notre application Web qui utilise \underline{\href{http://silex.sensiolabs.org}{Silex}} mais sinon rien de bien particulier ormis la configuration de l'URL \verb+/server-status+ qui doit \^etre disponible pour Pacemaker.\\
                     
-                    Il faudra donc bien décommenter le bout de code suivant à la fin du fichier :\\
+                    Il faudra donc bien d\'ecommenter le bout de code suivant \`a la fin du fichier :\\
                     
                     \begin{minted}[
                         linenos,
@@ -266,7 +270,7 @@
                         </Location>
                     \end{minted}
                     
-                    Enfin, spécifier le \verb+DocumentRoot+ à \verb+/var/cluster/www/org/tp/g1b5/web+ et y ajouter les règles de réécritures suivantes afin de faire fonctionner notre application :\\
+                    Enfin, sp\'ecifier le \verb+DocumentRoot+ \`a \verb+/var/cluster/www/org/tp/g1b5/web+ et y ajouter les r\`egles de r\'e\'ecritures suivantes afin de faire fonctionner notre application :\\
                     
                     \begin{minted}[
                         linenos,
@@ -289,7 +293,7 @@
                         </IfModule>
                     \end{minted}
                     
-                    Une fois configuré, nous pouvons lancer Apache :\\
+                    Une fois configur\'e, nous pouvons lancer Apache :\\
                     
                     \begin{bashcode*}{linenos=false, gobble=24}
                         /etc/init.d/corosync httpd
@@ -299,12 +303,12 @@
                 
                 \subsubsection{Installation}
                     
-                    L'installation de MySQL se fait très facilement grâce au script d'installation \verb+scripts/mysql.sh+.\\
-                    Le script arrête le serveur MySQL, charge le fichier de configuration \verb+confs/mysql/my.cnf+ à la place de l'ancien. Il démarre ensuite le service mysqld, puis cr\'ee les utilisateurs et peuple la base si nous sommes sur le premier noeud de la grappe.
+                    L'installation de MySQL se fait tr\`es facilement gr\^ace au script d'installation \verb+scripts/mysql.sh+.\\
+                    Le script arr\^ete le serveur MySQL, charge le fichier de configuration \verb+confs/mysql/my.cnf+ \`a la place de l'ancien. Il d\'emarre ensuite le service mysqld, puis cr\'ee les utilisateurs et peuple la base si nous sommes sur le premier noeud de la grappe.
                     
                 \subsubsection{Configuration}
                     
-                    Le fichier de configuration de MySQL est court, mais il est important dans notre cas de bien pr\'eciser le chemin du r\'epertoire ou seront stock\'ees les bases, \`a savoir dans notre cluster, dans le r\'epertoire \verb+/var/cluster/mysql+. De m\^eme, il est aussi important de pr\'eciser que l'adresse utilis\'ees par le serveur est celle de l'adresse du HAProxy : 10.192.10.50.\\
+                    Le fichier de configuration de MySQL est court, mais il est important dans notre cas de bien pr\'eciser le chemin du r\'epertoire ou seront stock\'ees les bases, \`a savoir dans notre cluster, dans le r\'epertoire \verb+/var/cluster/mysql+. De m\^eme, il est aussi important de pr\'eciser que l'adresse utilis\'ees par le serveur est celle de l'adresse du HAProxy : \verb+10.192.10.50+.\\
                     
                     \inputminted[
                         linenos,
@@ -330,7 +334,7 @@
                         mysqladmin password <mot_de_passe>
                     \end{minted}
                     
-                    Il faut ensuite cr\'eer un utilisateur ``tpuser'', et lui allouer des droits de s\'election sur tout les machines du r\'eseau 10.192.10.0, afin de permettre l'acc\`es \`a la base ``projet\_hd'' depuis une machine distante.\\
+                    Il faut ensuite cr\'eer un utilisateur ``tpuser'', et lui allouer des droits de s\'election sur tout les machines du r\'eseau \verb+10.192.10.0+, afin de permettre l'acc\`es \`a la base ``projet\_hd'' depuis une machine distante.\\
                     
                     \inputminted[
                         linenos,
@@ -344,7 +348,7 @@
                     
                     Il faut aussi cr\'eer puis initialiser la table ``product'', qui contient les donn\'ees sur notre stock. Elle contient les champs ``id'', ``name'', ``price'' et ``quantity''.\\
                     
-                    Une fois configuré, nous pouvons lancer MySQL :\\
+                    Une fois configur\'e, nous pouvons lancer MySQL :\\
                     
                     \begin{bashcode*}{linenos=false, gobble=24}
                         /etc/init.d/corosync mysqld
@@ -355,10 +359,10 @@
                 Pour commencer, il faut installer le paquet ``bind''. Comme pour les autres services, nous avons fait un script qui configure le serveur bind. 
                 Il copie tout simplement les fichiers de configuration que nous avons \'ecrit, puis lance le servic ``named''.\\
                 
-                Nous avons choisi une configuration ma\^itre/esclave classique plutôt que d'utiliser DRBD et PaceMaker, car il n'y a pas de donn\'ees \`a r\'epliqu\'e comme avec l'annuaire LDAP ou MySQL, il y a seulement les fichiers de zones.\\
-                De m\^eme, pour les adresses des serveurs DNS, nous avons utilis\'e l'adresse des machines plut\^ot que celle du proxy. Le ma\^itre est donc la machine LLM, ayant l'adresse 10.192.10.24, et l'esclave la machine JB, 10.192.10.23.\\
+                Nous avons choisi une configuration ma\^itre/esclave classique plut\^ot que d'utiliser DRBD et PaceMaker, car il n'y a pas de donn\'ees \`a r\'epliqu\'e comme avec l'annuaire LDAP ou MySQL, il y a seulement les fichiers de zones.\\
+                De m\^eme, pour les adresses des serveurs DNS, nous avons utilis\'e l'adresse des machines plut\^ot que celle du proxy. Le ma\^itre est donc la machine LLM, ayant l'adresse \verb+10.192.10.24+, et l'esclave la machine JB, \verb+10.192.10.23+.\\
                 
-                Le fichier de configuration de bind est simple, et nous avons seulement rajout\'e la partie concernant les fichiers de zones. Dans les fichiers de zones, l'adresse des serveurs DNS est celle des machines correspondantes, mais l'adresse de ``g1b5.tp.org'' et celle des diff\'erents services est celle du proxy, 10.192.10.50. \\
+                Le fichier de configuration de bind est simple, et nous avons seulement rajout\'e la partie concernant les fichiers de zones. Dans les fichiers de zones, l'adresse des serveurs DNS est celle des machines correspondantes, mais l'adresse de ``g1b5.tp.org'' et celle des diff\'erents services est celle du proxy, \verb+10.192.10.50+. \\
                 
                 Nous n'avons pas pu donner d'adresses IPv6 aux diff\'erents services car Corosync et PaceMaker ne permettent pas de d\'efinir plusieurs adresses (ou du moins nous n'avons pas trouv\'e) pour le proxy, les services ont donc seulement une adresse IPv4, seul les serveurs DNS ont une adresse IPv6.\\
                 
@@ -419,17 +423,17 @@
                 
         \section{Mise en place de Pacemaker et Corosync}
             
-            Dans une architecture HA, le système doit pouvoir constamment suivre son état et celui de son entourage afin de décider si il doit basculer (= ''failover'') ou non vers un noeud de secours. Pour cela, avec Fedora, nous avons choisi d'utiliser le service \underline{\href{http://clusterlabs.org}{Pacemaker}} couplé à \underline{\href{http://www.corosync.org}{Corosync}} car ils nous ont semblé très complets et très professionnels.
+            Dans une architecture HA, le syst\`eme doit pouvoir constamment suivre son \'etat et celui de son entourage afin de d\'ecider si il doit basculer (= ''failover'') ou non vers un noeud de secours. Pour cela, avec Fedora, nous avons choisi d'utiliser le service \underline{\href{http://clusterlabs.org}{Pacemaker}} coupl\'e \`a \underline{\href{http://www.corosync.org}{Corosync}} car ils nous ont sembl\'e tr\`es complets et tr\`es professionnels.
             
-            \subsection{Présentation}
+            \subsection{Pr\'esentation}
                 
-                Pour notre projet, nous avons choisi de mettre en place une architechure en grappes avec un système actif/passif. Ci-dessous un schéma de l'architechure :\\
+                Pour notre projet, nous avons choisi de mettre en place une architechure en grappes avec un syst\`eme actif/passif. Ci-dessous un sch\'ema de l'architechure :\\
                 
                 \includegraphics[keepaspectratio=true, width=\textwidth]{content/pacemaker-active-passive.png}\\[1cm]
                 
-                Les << node >> correspondent à nos machines (JB et LLM), la couche de messagerie OpenAIS correspondra au service Corosync qui est un projet dérivé d'OpenAIS. Pour les couches supérieures à Pacemaker, nous les avons vu précédemment.\\
+                Les << node >> correspondent \`a nos machines (JB et LLM), la couche de messagerie OpenAIS correspondra au service Corosync qui est un projet d\'eriv\'e d'OpenAIS. Pour les couches sup\'erieures \`a Pacemaker, nous les avons vu pr\'ec\'edemment.\\
                 
-                Corosync est un moteur de clustering mettant en oeuvre une messagerie de service sur réseau en utilisant une adresse et un port multicast.
+                Corosync est un moteur de clustering mettant en oeuvre une messagerie de service sur r\'eseau en utilisant une adresse et un port multicast.
                 
             \subsection{Installation}
                 
@@ -442,16 +446,16 @@
                 
                 \subsubsection{Corosync}
                     
-                    Avant toute chose, voici les adresses IP nécessaires :\\
+                    Avant toute chose, voici les adresses IP n\'ecessaires :\\
                     
                     \begin{description}
                         \item[Adresse IP multicast:] 239.0.0.1
                         \item[Port multicast:] 6800
-                        \item[Réseau de la grappe:] 10.192.10.0
+                        \item[R\'eseau de la grappe:] 10.192.10.0
                         \item[Adresse IP de la grappe:] 10.192.10.50
                     \end{description}
                     
-                    On va commencer par la configuration de Corosync qui est simpliste. Pour cela, on prends le fichier de configuration par défaut et on va simplement y changer les adresses IP comme ceci :\\
+                    On va commencer par la configuration de Corosync qui est simpliste. Pour cela, on prends le fichier de configuration par d\'efaut et on va simplement y changer les adresses IP comme ceci :\\
                     
                     \begin{bashcode*}{gobble=24}
                         CONF="/etc/corosync/corosync.conf"
@@ -461,7 +465,7 @@
                         sed -i.bak "s/.*bindnetaddr:.*/bindnetaddr:\ 10.192.10.0/g" $CONF
                     \end{bashcode*}
                     
-                    Ensuite, on va signaler à Corosync de charger le plugin Pacemaker afin qu'il puisse ''travailler'' avec :\\
+                    Ensuite, on va signaler \`a Corosync de charger le plugin Pacemaker afin qu'il puisse ''travailler'' avec :\\
                     
                     \begin{bashcode*}{gobble=24}
                         cat << EOT > /etc/corosync/service.d/pcmk
@@ -473,7 +477,7 @@
                         EOT
                     \end{bashcode*}
                     
-                    Une fois configuré, nous pouvons lancer Corosync :\\
+                    Une fois configur\'e, nous pouvons lancer Corosync :\\
                     
                     \begin{bashcode*}{linenos=false, gobble=24}
                         /etc/init.d/corosync start
@@ -481,15 +485,15 @@
                     
                 \subsubsection{Pacemaker}
                     
-                    Pacemaker offre une invite de commande propre à lui-même (comme les switch Cisco) que nous pouvons lancer en tapant \verb+crm+. Il est intéressant de savoir qu'en interne, la configuration de Pacemaker est formattée en XML car suite à quelques erreurs de notre part, nous avons pu constater des erreurs de validation d'entrée contre des Schémas XML.\\
+                    Pacemaker offre une invite de commande propre \`a lui-m\^eme (comme les switch Cisco) que nous pouvons lancer en tapant \verb+crm+. Il est int\'eressant de savoir qu'en interne, la configuration de Pacemaker est formatt\'ee en XML car suite \`a quelques erreurs de notre part, nous avons pu constater des erreurs de validation d'entr\'ee contre des Sch\'emas XML.\\
                     
-                    Afin de vous épargner la configuration à la main de Pacemaker, nous pouvons exporter et injecter directement une configuration donnée :\\
+                    Afin de vous \'epargner la configuration \`a la main de Pacemaker, nous pouvons exporter et injecter directement une configuration donn\'ee :\\
                     
                     \begin{bashcode*}{linenos=false, gobble=24}
                         crm configure load replace /path/to/conf/file
                     \end{bashcode*}
                     
-                    Mais avant cela, vous devez démarrer Pacemaker et vider sa configuration actuelle (si existante) :\\
+                    Mais avant cela, vous devez d\'emarrer Pacemaker et vider sa configuration actuelle (si existante) :\\
                     
                     \begin{bashcode*}{linenos=false, gobble=24}
                         /etc/init.d/pacemaker start
@@ -508,10 +512,12 @@
                         xrightmargin=5pt
                     ]{text}{./../confs/pcmk/conf.work}
                     
-                    Dans ce fichier, on peut y entrevoir des déclarations de ressources comme une IP ``flottante'' (\verb+10.192.10.50+) sur laquelle le monde extérieur va se connecter au services que contient la grappe, des ressources de battement de coeurs pour un système de fichier, les serveurs Apache, MySQL, LDAP et enfin la ressource de réplication bas niveau DRBD.\\
+                    Dans ce fichier, on peut y entrevoir des d\'eclarations de ressources comme une IP ``flottante'' (\verb+10.192.10.50+) sur laquelle le monde ext\'erieur va se connecter au services que contient la grappe, des ressources de battement de coeurs pour un syst\`eme de fichier, les serveurs Apache, MySQL, LDAP et enfin la ressource de r\'eplication bas niveau DRBD.\\
                     
-                    Mais ce n'est que la déclaration des ressources, ensuite viennnent les dépendances de ``colocation'' qui obligent deux ressources données à toujours être de paire et enfin les ordres de démarrage des ressources en fonction des dépendances.
-                    Par exemple, Apache ne peut pas démarrer avant que le système de fichier soit opérationnel.
+                    Mais ce n'est que la d\'eclaration des ressources, ensuite viennnent les d\'ependances de ``colocation'' qui obligent deux ressources donn\'ees \`a toujours \^etre de paire et enfin les ordres de d\'emarrage des ressources en fonction des d\'ependances.
+                    Par exemple, Apache ne peut pas d\'emarrer avant que le syst\`eme de fichier soit op\'erationnel.
+                    
+                    Les autres fichiers de configuration sont disponibles en annexe \underline{\no\ref{pacemaker}}.
                     
                 \subsection{Utilisation}
                     
@@ -520,37 +526,37 @@
                     En ce qui concerne la gestion des noeuds ou des ressources, il faut utiliser la commande \verb+crm+. Voici quelques exemples :\\
                     
                     \begin{bashcode*}{gobble=24}
-                        # Vérifier le status d'une ressource
+                        # Verifier le status d'une ressource
                         crm resource status Apache
-                        # Redémarrer une resource
+                        # Redemarrer une resource
                         crm resource restart MySQL
-                        # Déplacer une ressource sur un autre noeud
+                        # Deplacer une ressource sur un autre noeud
                         crm ressource move FS mamba14
                         # Voir le status d'un noeud
                         crm node status mamba13
                         # Mettre un noeud en standby (simulation du failover)
                         crm node standby mamb14
-                        # Et le rendre disponible à nouveau
+                        # Et le rendre disponible a nouveau
                         crm node online mamba14
                     \end{bashcode*}
                     
     \part{Application Web}
         
-        \section{Présentation}
+        \section{Pr\'esentation}
             
-            L'application Web demandée devait permettre de d'afficher et d'insérer des données dans l'annuaire LDAP et dans la base de données MySQL.\\
+            L'application Web demand\'ee devait permettre de d'afficher et d'ins\'erer des donn\'ees dans l'annuaire LDAP et dans la base de donn\'ees MySQL.\\
             
-            Développé en 3h seulement, l'application repose sur PHP 5.3 et utilise des frameworks récents comme \underline{\href{http://silex.sensiolabs.org}{Silex}} (\underline{\href{http://symfony.com}{Symfony 2}}), \underline{\href{http://framework.zend.com}{Zend Framework 2}} et enfin le framework CSS \underline{\href{http://twitter.github.com/bootstrap}{bootstrap}} de Twitter. Encore une fois, un maximum d'outils facile à mettre en oeuvre et puissants en quelques heures seulements.\\
+            D\'evelopp\'e en 3h seulement, l'application repose sur PHP 5.3 et utilise des frameworks r\'ecents comme \underline{\href{http://silex.sensiolabs.org}{Silex}} (\underline{\href{http://symfony.com}{Symfony 2}}), \underline{\href{http://framework.zend.com}{Zend Framework 2}} et enfin le framework CSS \underline{\href{http://twitter.github.com/bootstrap}{bootstrap}} de Twitter. Encore une fois, un maximum d'outils facile \`a mettre en oeuvre et puissants en quelques heures seulements.\\
             
-            Une capture d'écran de notre application est présente en annexe \no\underline{\ref{webapp}}.
+            Une capture d'\'ecran de notre application est pr\'esente en annexe \underline{\no\ref{webapp}}.
             
         \section{Code source}
             
-            Dans cette partie du rapport, nous allons vous montrer comment utiliser les outils choisis pour arriver à nos fins.
+            Dans cette partie du rapport, nous allons vous montrer comment utiliser les outils choisis pour arriver \`a nos fins.
             
             \subsection{LDAP}
                 
-                Pour la partie LDAP, nous avons utilisé la \underline{\href{http://framework.zend.com/manual/fr/zend.ldap.html}{brique LDAP}} du Zend Framework 2.
+                Pour la partie LDAP, nous avons utilis\'e la \underline{\href{http://framework.zend.com/manual/fr/zend.ldap.html}{brique LDAP}} du Zend Framework 2.
                 
                 \subsubsection{Instance}
                 
@@ -576,7 +582,7 @@
                         });
                     \end{phpcode}
                 
-                \subsubsection{Récupération de toute les personnes}
+                \subsubsection{R\'ecup\'eration de toute les personnes}
                 
                     \begin{phpcode}
                         <?php
@@ -620,7 +626,7 @@
             
             \subsection{MySQL}
                 
-                Concernant MySQL, nous n'avons pas utilisé d'ORM comme Doctrine mais nous avons simplement utilisé PDO.
+                Concernant MySQL, nous n'avons pas utilis\'e d'ORM comme Doctrine mais nous avons simplement utilis\'e PDO.
                 
                 \subsubsection{Instance}
                     
@@ -637,7 +643,7 @@
                         });
                     \end{phpcode}
                     
-                \subsubsection{Récupération de tous les produits}
+                \subsubsection{R\'ecup\'eration de tous les produits}
                     
                     \begin{phpcode}
                         <?php
@@ -673,43 +679,43 @@
                     \end{phpcode}
                     
     \part{Conclusion}
-        \section{Difficultés rencontrés}
+        \section{Difficult\'es rencontr\'es}
             
-            Durant ce projet, la contrainte majeure était de réaliser une telle architechure en 3 jours seulement sans avoir aucune expérience dans le domaine. Nous avons souhaité nous orienter vers des choix fonctionnels et matures plutôt qu'universitaires et peu professionnels.\\
+            Durant ce projet, la contrainte majeure \'etait de r\'ealiser une telle architechure en 3 jours seulement sans avoir aucune exp\'erience dans le domaine. Nous avons souhait\'e nous orienter vers des choix fonctionnels et matures plut\^ot qu'universitaires et peu professionnels.\\
             
-            Le premier facteur de difficulté aura été l'abscence d'indications concernant le choix des technologies car nous avons réellement été soumis à un environnement pragmatique où nous jouons le rôle des responsables SI vers qui on vient se conseiller suite une problématique bien présente.
-            Le choix et la décision des technologies est une chose mais ce qui est le plus chronophage est de regarder les produits et les solutions existantes sur le marché.\\
+            Le premier facteur de difficult\'e aura \'et\'e l'abscence d'indications concernant le choix des technologies car nous avons r\'eellement \'et\'e soumis \`a un environnement pragmatique o\`u nous jouons le r\^ole des responsables SI vers qui on vient se conseiller suite une probl\'ematique bien pr\'esente.
+            Le choix et la d\'ecision des technologies est une chose mais ce qui est le plus chronophage est de regarder les produits et les solutions existantes sur le march\'e.\\
             
-            Une fois les choix réalisés, il a fallu se documenter pour savoir implémenter au mieux possible l'infrastructure logicielle. Nous ne vous cacherons pas que nous avons lu 90\% de documentation en anglais durant ces 3 jours. De l'anglais pas toujours facile à comprendre de part ses termes techniques mais surtout de part la notion nouvelle que nous découvrions sur le tas.\\
+            Une fois les choix r\'ealis\'es, il a fallu se documenter pour savoir impl\'ementer au mieux possible l'infrastructure logicielle. Nous ne vous cacherons pas que nous avons lu 90\% de documentation en anglais durant ces 3 jours. De l'anglais pas toujours facile \`a comprendre de part ses termes techniques mais surtout de part la notion nouvelle que nous d\'ecouvrions sur le tas.\\
             
-            La difficulté suivante fut liée aux machines elles-même : impossible de prévoir que tout va fonctionner du premier coup, le fait que les machines aient besoin d'un serveur mandataire pour accèder au Web rajoute quelques contraintes sur les configurations mais surtout le manque de maîtrise complet sur les distributions Fedora nous aura fait perdre un peu de temps non négligeable.\\
+            La difficult\'e suivante fut li\'ee aux machines elles-m\^eme : impossible de pr\'evoir que tout va fonctionner du premier coup, le fait que les machines aient besoin d'un serveur mandataire pour acc\`eder au Web rajoute quelques contraintes sur les configurations mais surtout le manque de ma\^itrise complet sur les distributions Fedora nous aura fait perdre un peu de temps non n\'egligeable.\\
             
-            Malgré tout cela, nous sommes parvenus automatiser de manière relativement complète l'installation, la configuration et le déploiement de notre projet à l'aide de Subversion et de scripts Bash.
+            Malgr\'e tout cela, nous sommes parvenus automatiser de mani\`ere relativement compl\`ete l'installation, la configuration et le d\'eploiement de notre projet \`a l'aide de Subversion et de scripts Bash.
             
-        \section{Retours sur échec}
+        \section{Retours sur \'echec}
             
-            Après 3 jours de recherche, de développement et de tests acharnés sur les différentes briques de notre architechure, nous avons échoué lors de la présentation de notre projet. En voici les raisons majeures :\\
+            Apr\`es 3 jours de recherche, de d\'eveloppement et de tests acharn\'es sur les diff\'erentes briques de notre architechure, nous avons \'echou\'e lors de la pr\'esentation de notre projet. En voici les raisons majeures :\\
             
             \begin{enumerate}
-                \item Manque d'expérience avec les technologies utilisées
-                \item Manque d'organisation et de rigueur dans les procédures
+                \item Manque d'exp\'erience avec les technologies utilis\'ees
+                \item Manque d'organisation et de rigueur dans les proc\'edures
                 \item Manque de temps (implique du stress)
-                \item Analyses sur tests défaillants pas assez complètes
+                \item Analyses sur tests d\'efaillants pas assez compl\`etes
             \end{enumerate}
             
-            D'une certaine manière, tous ces facteurs sont liés car ils s'entre-croisent et s'encouragent et nous le savions mais pas c'est pas toujours évident d'avoir le temps de prendre le recul nécessaire afin de mieux repartir.\\
+            D'une certaine mani\`ere, tous ces facteurs sont li\'es car ils s'entre-croisent et s'encouragent et nous le savions mais pas c'est pas toujours \'evident d'avoir le temps de prendre le recul n\'ecessaire afin de mieux repartir.\\
             
-            Après des heures intensives de travail, nous avions réussi à faire tourner notre architechure active/passive en simulant des failovers et des failback avec succès mais sans tester tous les cas possibles et surtout les cas d'évaluation. Suite à ce succès précipité, nous avons voulu optimiser la configuration de Pacemaker afin de la simplifier mais nous nous sommes rendu compte après analyse que cette nouvelle configuration ne répondait plus au contraintes d'ordre de basculement des services lors du failover.
+            Apr\`es des heures intensives de travail, nous avions r\'eussi \`a faire tourner notre architechure active/passive en simulant des failovers et des failback avec succ\`es mais sans tester tous les cas possibles et surtout les cas d'\'evaluation. Suite \`a ce succ\`es pr\'ecipit\'e, nous avons voulu optimiser la configuration de Pacemaker afin de la simplifier mais nous nous sommes rendu compte apr\`es analyse que cette nouvelle configuration ne r\'epondait plus au contraintes d'ordre de basculement des services lors du failover.
             
-            Dans le stress et la précipitation, nous avons voulu essayer une architechure active/active car nous pensions que le type d'architechure active/passive ne répondait pas à la demande de l'évaluation (analyse d'échec pas assez poussée) mais près quelques heures d'installation et de configuration, cette nouvelle monture n'a pas été un succès à cause d'un soucis de synchronisation de volume avec DRBD bien que la nouvelle configuration active/active de Pacemaker était déjà prète.
+            Dans le stress et la pr\'ecipitation, nous avons voulu essayer une architechure active/active car nous pensions que le type d'architechure active/passive ne r\'epondait pas \`a la demande de l'\'evaluation (analyse d'\'echec pas assez pouss\'ee) mais pr\`es quelques heures d'installation et de configuration, cette nouvelle monture n'a pas \'et\'e un succ\`es \`a cause d'un soucis de synchronisation de volume avec DRBD bien que la nouvelle configuration active/active de Pacemaker \'etait d\'ej\`a pr\`ete.
             
         \section{Retours personnels}
             
             \subsection{Joris \textsc{BERTHELOT}}
                 
-                Bien que le projet ne fut pas un succès au moment de l'évaluation, nous pouvons tout de même avancer que notre architechure a bel et bien tourné et surtout sous les yeux d'un de nos évaluateur quelques heures auparavant. C'est donc tout de même avec une certaine déception que nous vous remettons ce dossier sachant que son contenu n'a pas pu fonctionner comme nous l'aurions souhaité au moment idéal.\\
+                Bien que le projet ne fut pas un succ\`es au moment de l'\'evaluation, nous pouvons tout de m\^eme avancer que notre architechure a bel et bien tourn\'e et surtout sous les yeux d'un de nos \'evaluateur quelques heures auparavant. C'est donc tout de m\^eme avec une certaine d\'eception que nous vous remettons ce dossier sachant que son contenu n'a pas pu fonctionner comme nous l'aurions souhait\'e au moment id\'eal.\\
                 
-                Très personnellement, j'ai éprouvé un réel plaisir à m'activer intensément pour la bonne réussite du projet et même si nous n'avons pas réussi, j'ai appris énormément de choses sur un domaine qui m'attirait depuis quelques temps déjà. En PME ou en auto-entreprise, il est vraiment peu probable de devoir réaliser de genre d'architechure en grappe donc je suis très agréablement surpris d'avoir abordé cela en cycle universitaire.
+                Tr\`es personnellement, j'ai \'eprouv\'e un r\'eel plaisir \`a m'activer intens\'ement pour la bonne r\'eussite du projet et m\^eme si nous n'avons pas r\'eussi, j'ai appris \'enorm\'ement de choses sur un domaine qui m'attirait depuis quelques temps d\'ej\`a. En PME ou en auto-entreprise, il est vraiment peu probable de devoir r\'ealiser de genre d'architechure en grappe donc je suis tr\`es agr\'eablement surpris d'avoir abord\'e cela en cycle universitaire.
                 
             \subsection{Laurent \textsc{LE MOINE}}
                 
@@ -797,7 +803,7 @@
                 xrightmargin=5pt
             ]{text}{./../confs/pcmk/conf.fail}
             
-            Fichier de configuration de Pacemaker pour une architechure active/active (non testé) :
+            Fichier de configuration de Pacemaker pour une architechure active/active (non test\'e) :
             
             \inputminted[
                 linenos,
@@ -811,13 +817,15 @@
             
         \section{Application Web} \label{webapp}
             
-            Capture d'écran de la page d'accueil de notre application Web :\\
+            Capture d'\'ecran de la page d'accueil de notre application Web :\\
             
             \includegraphics[keepaspectratio=true, width=\textwidth]{content/webapp_home.png}\\[1cm]
         
+        \newpage
+        
         \section{Bibliographie}
             
-            Ici sont répertorié tous les liens utiles pour l'avancement du projet.
+            Ici sont r\'epertori\'e tous les liens utiles pour l'avancement du projet.
             
             \subsection{LDAP}
             
