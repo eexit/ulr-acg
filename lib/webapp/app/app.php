@@ -41,7 +41,7 @@ $app['ldap'] = $app->share(function() {
 $app['mysql'] = $app->share(function() {
    try {
        $pdo_options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION;
-       return new \PDO('mysql:host=localhost;dbname=projet_hd', 'root', 'foo', $pdo_options);       
+       return new \PDO('mysql:host=localhost;dbname=projet_hd', 'root', 'foo', $pdo_options);
    } catch (\PDOException $e) {
        var_dump($e->getMessage());
    }
@@ -72,7 +72,7 @@ $app->get('/', function(Silex\Application $app) {
 });
 
 $app->get('/ldap.html', function(Silex\Application $app) {
-	$filter	= Filter::equals('objectClass', 'person');
+    $filter = Filter::equals('objectClass', 'person');
     $results = $app['ldap']->search($filter, 'ou=employee,dc=g1b5,dc=tp,dc=org', Ldap::SEARCH_SCOPE_SUB);
     return $app['twig']->render('ldap.twig', array(
         'dir'       => true,
@@ -87,7 +87,7 @@ $app->post('/ldap.html', function(Silex\Application $app) {
     Attribute::setAttribute($entry, 'sn', $name);
     Attribute::setAttribute($entry, 'objectClass', 'inetOrgPerson');
     $app['ldap']->add('cn=' . $name . ' ,ou=employee,dc=g1b5,dc=tp,dc=org', $entry);
-    $filter	= Filter::equals('objectClass', 'person');
+    $filter = Filter::equals('objectClass', 'person');
     $results = $app['ldap']->search($filter, 'ou=employee,dc=g1b5,dc=tp,dc=org', Ldap::SEARCH_SCOPE_SUB);
     return $app['twig']->render('ldap.twig', array(
         'dir'       => true,
@@ -106,12 +106,12 @@ $app->get('/mysql.html', function(Silex\Application $app) {
 $app->post('/mysql.html', function(Silex\Application $app) {
     $req = $app['mysql']->prepare('INSERT INTO product(name, price, quantity) VALUES(:name, :price, :quantity)');
     $req->execute(array(
-	    'name'      => $app->escape($app['request']->get('name')),
-	    'price'     => $app->escape($app['request']->get('price')),
-	    'quantity'  => $app->escape($app['request']->get('qte'))
-	));
-	$response = $app['mysql']->query('SELECT * FROM `product`')->fetchAll(\PDO::FETCH_ASSOC);
-	return $app['twig']->render('mysql.twig', array(
+        'name'      => $app->escape($app['request']->get('name')),
+        'price'     => $app->escape($app['request']->get('price')),
+        'quantity'  => $app->escape($app['request']->get('qte'))
+    ));
+    $response = $app['mysql']->query('SELECT * FROM `product`')->fetchAll(\PDO::FETCH_ASSOC);
+    return $app['twig']->render('mysql.twig', array(
         'db'        => true,
         'entries'   => $response
     ));
