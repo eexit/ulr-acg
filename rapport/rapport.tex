@@ -560,7 +560,21 @@
             Dans le stress et la précipitation, nous avons voulu essayer une architechure active/active car nous pensions que le type d'architechure active/passive ne répondait pas à la demande de l'évaluation (analyse d'échec pas assez poussée) mais près quelques heures d'installation et de configuration, cette nouvelle monture n'a pas été un succès à cause d'un soucis de synchronisation de volume avec DRBD bien que la nouvelle configuration active/active de Pacemaker était déjà prète.
             
         \section{Retours personnels}
-        
+
+            \subsection{Joris Berthelot}
+
+                
+
+            \subsection{Laurent Le Moine}
+
+                J'ai trouv\'e ce projet int\'eressant, et ancr\'e dans les probl\'ematiques propres aux entreprises, ce qui change par rapport aux projets habituels.\\
+                
+                L'installation des diff\'erents services ne nous \`a pos\'e de probl\`emes, \`a part LDAP qui ne prenait pas en compte le fichier de configuration et utilisait la nouvelle m\'ethode, mais une fois ceci compris nous n'avons pas eu d'autres probl\`emes.\\
+                
+                Les gros probl\`emes sont bien sur venus de DRBD et PaceMaker. Nous \'etions arriv\'es a une configuration relativement fonctionnelle et efficace, bien qu'elle n'\'etait pas parfaite. Le passage \`a la configuration Actif/Actif a \'et\'e une erreur.\\
+
+                Avec le recul, nous aurions d'abord du pr\'eparer une r\'eplication basique, mais fonctionnelle, puis ensuite s'occuper de mettre en place DRBD et PaceMaker, plus efficaces et plus professionnels. Nous sommes partis sur le postulat que dans une entreprise il vaut mieux mettre en place ce genre de syst\`emes, plut\^ot que la r\'eplication basique de MySQL et de LDAP. Ces syst\`emes ont l'avantage de se g\'erer tous seuls.
+
     \newpage
     \appendix
     \part{Annexes}
