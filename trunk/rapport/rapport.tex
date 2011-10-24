@@ -1,3 +1,4 @@
+
 % ========================
 % = Rapport de projet HA =
 % ========================
@@ -39,6 +40,16 @@
     xleftmargin=5pt,
     xrightmargin=5pt
 }
+\newminted{php}{
+    linenos=false,
+    bgcolor=lightgray,
+    tabsize=4,
+    gobble=24,
+    fontfamily=courier,
+    fontsize=\small,
+    xleftmargin=5pt,
+    xrightmargin=5pt
+}
 \hypersetup{
     bookmarks=true,
     unicode=true,
@@ -70,7 +81,7 @@
         
         \addcontentsline{toc}{section}{Postes de travail}
         
-            Assigné comme table n°5, nous avons utilisé les postes suivants :\\
+            Assigné comme table \no5, nous avons utilisé les postes suivants :\\
         
             \begin{description}
                 \item[Joris Berthelot (sera la machine << JB >> dans le reste du rapport)] \hfill \\
@@ -447,7 +458,7 @@
                         cp -f $CONF.example $CONF
                         sed -i.bak "s/.*mcastaddr:.*/mcastaddr:\ 239.0.0.1/g" $CONF
                         sed -i.bak "s/.*mcastport:.*/mcastport:\ 6800/g" $CONF
-                        sed -i.bak "s/.*bindnetaddr:.*/bindnetaddr:\ 10.192.10.0/g" \$CONF
+                        sed -i.bak "s/.*bindnetaddr:.*/bindnetaddr:\ 10.192.10.0/g" $CONF
                     \end{bashcode*}
                     
                     Ensuite, on va signaler à Corosync de charger le plugin Pacemaker afin qu'il puisse ''travailler'' avec :\\
@@ -523,11 +534,144 @@
                         crm node online mamba14
                     \end{bashcode*}
                     
-    \part{Tests}
-        \section{Serveur de noms}
-        \section{Serveur Apache}
-        \section{Serveur MySQL}
-        \section{Serveur LDAP}
+    \part{Application Web}
+        
+        \section{Présentation}
+            
+            L'application Web demandée devait permettre de d'afficher et d'insérer des données dans l'annuaire LDAP et dans la base de données MySQL.\\
+            
+            Développé en 3h seulement, l'application repose sur PHP 5.3 et utilise des frameworks récents comme \underline{\href{http://silex.sensiolabs.org}{Silex}} (\underline{\href{http://symfony.com}{Symfony 2}}), \underline{\href{http://framework.zend.com}{Zend Framework 2}} et enfin le framework CSS \underline{\href{http://twitter.github.com/bootstrap}{bootstrap}} de Twitter. Encore une fois, un maximum d'outils facile à mettre en oeuvre et puissants en quelques heures seulements.\\
+            
+            Une capture d'écran de notre application est présente en annexe \no\underline{\ref{webapp}}.
+            
+        \section{Code source}
+            
+            Dans cette partie du rapport, nous allons vous montrer comment utiliser les outils choisis pour arriver à nos fins.
+            
+            \subsection{LDAP}
+                
+                Pour la partie LDAP, nous avons utilisé la \underline{\href{http://framework.zend.com/manual/fr/zend.ldap.html}{brique LDAP}} du Zend Framework 2.
+                
+                \subsubsection{Instance}
+                
+                    \begin{phpcode}
+                        <?php
+                        use Zend\Ldap\Ldap;
+                        use Zend\Ldap\Exception as LdapException;
+                        // ...
+                        $app['ldap'] = $app->share(function() {
+                            try {
+                                $ldap = new Ldap(array(
+                                    'host'              => 'ldap://localhost',
+                                    'username'          => 'cn=manager,dc=g1b5,dc=tp,dc=org',
+                                    'password'          => 'iamldapadmin',
+                                    'bindRequiresDn'    => true,
+                                    'accountDomainName' => 'g1b5.tp.org',
+                                    'baseDn'            => 'ou=employee,dc=g1b5,dc=tp,dc=org',
+                                ));
+                                return $ldap->bind();
+                            } catch (LdapException $e) {
+                                var_dump($e->getMessage());
+                            }
+                        });
+                    \end{phpcode}
+                
+                \subsubsection{Récupération de toute les personnes}
+                
+                    \begin{phpcode}
+                        <?php
+                        use Zend\Ldap\Ldap;
+                        use Zend\Ldap\Exception as LdapException;
+                        // ...
+                        $app->get('/ldap.html', function(Silex\Application $app) {
+                            $filter = Filter::equals('objectClass', 'person');
+                            $results = $app['ldap']->search($filter, 'ou=employee,dc=g1b5,dc=tp,dc=org',
+                            Ldap::SEARCH_SCOPE_SUB);
+                            return $app['twig']->render('ldap.twig', array(
+                                'dir'       => true,
+                                'entries'   => $results
+                            ));
+                        });
+                    \end{phpcode}
+                    
+                \subsubsection{Ajout d'une personne}
+                    
+                    \begin{phpcode}
+                        <?php
+                        use Zend\Ldap\Ldap;
+                        use Zend\Ldap\Exception as LdapException;
+                        // ...
+                        $app->post('/ldap.html', function(Silex\Application $app) {
+                            $name = $app->escape($app['request']->get('name'));
+                            $entry = array();
+                            Attribute::setAttribute($entry, 'cn', $name);
+                            Attribute::setAttribute($entry, 'sn', $name);
+                            Attribute::setAttribute($entry, 'objectClass', 'inetOrgPerson');
+                            $app['ldap']->add('cn=' . $name . ' ,ou=employee,dc=g1b5,dc=tp,dc=org', $entry);
+                            $filter = Filter::equals('objectClass', 'person');
+                            $results = $app['ldap']->search($filter, 'ou=employee,dc=g1b5,dc=tp,dc=org',
+                            Ldap::SEARCH_SCOPE_SUB);
+                            return $app['twig']->render('ldap.twig', array(
+                                'dir'       => true,
+                                'entries'   => $results
+                            ));
+                        });
+                    \end{phpcode}
+            
+            \subsection{MySQL}
+                
+                Concernant MySQL, nous n'avons pas utilisé d'ORM comme Doctrine mais nous avons simplement utilisé PDO.
+                
+                \subsubsection{Instance}
+                    
+                    \begin{phpcode}
+                        <?php
+                        $app['mysql'] = $app->share(function() {
+                           try {
+                               $pdo_options[\PDO::ATTR_ERRMODE] = \PDO::ERRMODE_EXCEPTION;
+                               return new \PDO('mysql:host=localhost;dbname=projet_hd', 'root', 'pa$$wd',
+                               $pdo_options);
+                           } catch (\PDOException $e) {
+                               var_dump($e->getMessage());
+                           }
+                        });
+                    \end{phpcode}
+                    
+                \subsubsection{Récupération de tous les produits}
+                    
+                    \begin{phpcode}
+                        <?php
+                        $app->get('/mysql.html', function(Silex\Application $app) {
+                            $response = $app['mysql']->query('SELECT * FROM `product`')
+                                        ->fetchAll(\PDO::FETCH_ASSOC);
+                            return $app['twig']->render('mysql.twig', array(
+                                'db'        => true,
+                                'entries'   => $response
+                            ));
+                        });
+                    \end{phpcode}
+                    
+                \subsubsection{Ajout d'un produit}
+                    
+                    \begin{phpcode}
+                        <?php
+                        $app->post('/mysql.html', function(Silex\Application $app) {
+                            $req = $app['mysql']->prepare('INSERT INTO product(name, price, quantity)
+                                VALUES(:name, :price, :quantity)');
+                            $req->execute(array(
+                                'name'      => $app->escape($app['request']->get('name')),
+                                'price'     => $app->escape($app['request']->get('price')),
+                                'quantity'  => $app->escape($app['request']->get('qte'))
+                            ));
+                            $response = $app['mysql']->query('SELECT * FROM `product`')
+                                        ->fetchAll(\PDO::FETCH_ASSOC);
+                            return $app['twig']->render('mysql.twig', array(
+                                'db'        => true,
+                                'entries'   => $response
+                            ));
+                        });
+                    \end{phpcode}
+                    
     \part{Conclusion}
         \section{Difficultés rencontrés}
             
@@ -560,26 +704,35 @@
             Dans le stress et la précipitation, nous avons voulu essayer une architechure active/active car nous pensions que le type d'architechure active/passive ne répondait pas à la demande de l'évaluation (analyse d'échec pas assez poussée) mais près quelques heures d'installation et de configuration, cette nouvelle monture n'a pas été un succès à cause d'un soucis de synchronisation de volume avec DRBD bien que la nouvelle configuration active/active de Pacemaker était déjà prète.
             
         \section{Retours personnels}
-
-            \subsection{Joris Berthelot}
-
+            
+            \subsection{Joris \textsc{BERTHELOT}}
                 
-
-            \subsection{Laurent Le Moine}
-
+                Bien que le projet ne fut pas un succès au moment de l'évaluation, nous pouvons tout de même avancer que notre architechure a bel et bien tourné et surtout sous les yeux d'un de nos évaluateur quelques heures auparavant. C'est donc tout de même avec une certaine déception que nous vous remettons ce dossier sachant que son contenu n'a pas pu fonctionner comme nous l'aurions souhaité au moment idéal.\\
+                
+                Très personnellement, j'ai éprouvé un réel plaisir à m'activer intensément pour la bonne réussite du projet et même si nous n'avons pas réussi, j'ai appris énormément de choses sur un domaine qui m'attirait depuis quelques temps déjà. En PME ou en auto-entreprise, il est vraiment peu probable de devoir réaliser de genre d'architechure en grappe donc je suis très agréablement surpris d'avoir abordé cela en cycle universitaire.
+                
+            \subsection{Laurent \textsc{LE MOINE}}
+                
                 J'ai trouv\'e ce projet int\'eressant, et ancr\'e dans les probl\'ematiques propres aux entreprises, ce qui change par rapport aux projets habituels.\\
                 
                 L'installation des diff\'erents services ne nous \`a pos\'e de probl\`emes, \`a part LDAP qui ne prenait pas en compte le fichier de configuration et utilisait la nouvelle m\'ethode, mais une fois ceci compris nous n'avons pas eu d'autres probl\`emes.\\
                 
-                Les gros probl\`emes sont bien sur venus de DRBD et PaceMaker. Nous \'etions arriv\'es a une configuration relativement fonctionnelle et efficace, bien qu'elle n'\'etait pas parfaite. Le passage \`a la configuration Actif/Actif a \'et\'e une erreur.\\
-
+                Les gros probl\`emes sont bien sur venus de DRBD et Pacemaker. Nous \'etions arriv\'es a une configuration relativement fonctionnelle et efficace, bien qu'elle n'\'etait pas parfaite. Le passage \`a la configuration Actif/Actif a \'et\'e une erreur.\\
+                
                 Avec le recul, nous aurions d'abord du pr\'eparer une r\'eplication basique, mais fonctionnelle, puis ensuite s'occuper de mettre en place DRBD et PaceMaker, plus efficaces et plus professionnels. Nous sommes partis sur le postulat que dans une entreprise il vaut mieux mettre en place ce genre de syst\`emes, plut\^ot que la r\'eplication basique de MySQL et de LDAP. Ces syst\`emes ont l'avantage de se g\'erer tous seuls.
-
-    \newpage
+                
+                \vfill
+                \flushright{Joris \textsc{BERTHELOT}\\
+                joris@berthelot.tel\\
+                \&\\
+                Laurent \textsc{LE MOINE}
+                \\laurent.le.moine17@gmail.com}
+                \flushleft{}
+    
     \appendix
+    
     \part{Annexes}
-
-	
+    
         \section{Bind} \label{bind}
             
             Fichier de configuration du serveur esclave :\\
@@ -630,19 +783,62 @@
                 xrightmargin=5pt
             ]{text}{./../confs/bind/rv6.g1b5.tp.org.zone}
             
-
-LDAP :
-
-http://www.openldap.org/
-http://articles.mongueurs.net/magazines/linuxmag65.html
-
-MySQL :
-
-http://dev.mysql.com/doc/refman/5.5/en/index.html
-
-BIND :
-
-http://www.bind9.net/
-http://www.redfoxcenter.org/serveur/bind.html
+        \section{Pacemaker} \label{pacemaker}
+            
+            Fichier de configuration de Pacemaker qui a voulu notre chute :
+            
+            \inputminted[
+                linenos,
+                bgcolor=lightgray,
+                tabsize=4,
+                fontfamily=courier,
+                fontsize=\small,
+                xleftmargin=5pt,
+                xrightmargin=5pt
+            ]{text}{./../confs/pcmk/conf.fail}
+            
+            Fichier de configuration de Pacemaker pour une architechure active/active (non testé) :
+            
+            \inputminted[
+                linenos,
+                bgcolor=lightgray,
+                tabsize=4,
+                fontfamily=courier,
+                fontsize=\small,
+                xleftmargin=5pt,
+                xrightmargin=5pt
+            ]{text}{./../confs/pcmk/conf.aa}
+            
+        \section{Application Web} \label{webapp}
+            
+            Capture d'écran de la page d'accueil de notre application Web :\\
+            
+            \includegraphics[keepaspectratio=true, width=\textwidth]{content/webapp_home.png}\\[1cm]
         
+        \section{Bibliographie}
+            
+            Ici sont répertorié tous les liens utiles pour l'avancement du projet.
+            
+            \subsection{LDAP}
+            
+                \url{http://www.openldap.org}
+                \url{http://articles.mongueurs.net/magazines/linuxmag65.html}
+            
+            \subsection{MySQL}
+            
+                \url{http://dev.mysql.com/doc/refman/5.5/en/index.html}
+                \url{}
+                
+            \subsection{Bind}
+                
+                \url{http://www.bind9.net/}
+                \url{http://www.redfoxcenter.org/serveur/bind.html}
+            
+            \subsection{Pacemaker, DRBD}
+                
+                \url{http://www.clusterlabs.org/doc/en-US/Pacemaker/1.1/html/Clusters_from_Scratch/}
+                \url{http://www.drbd.org/users-guide/re-drbdconf.html}
+                \url{http://http://www.drbd.org/users-guide/re-drbdadm.html}
+                \url{http://en.wikipedia.org/wiki/Computer_cluster}
+                
 \end{document}
