@@ -13,5 +13,5 @@ Si vous souhaitez un jour monter une architecture en grappe pour les services su
  * Bind
 
 ## Auteurs
-- Joris Berthelot <admin@eexit.net>
-- Laurent Le Moine <laurent.le.moine17@gmail.com>
+- Joris Berthelot
+- Laurent Le Moine
